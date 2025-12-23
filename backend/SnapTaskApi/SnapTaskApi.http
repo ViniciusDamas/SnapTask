@@ -1,0 +1,6 @@
+@SnapTaskApi_HostAddress = http://localhost:5187
+
+#GET {{SnapTaskApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
