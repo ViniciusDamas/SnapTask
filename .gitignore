@@ -1,0 +1,75 @@
+##################################
+# General
+##################################
+.DS_Store
+Thumbs.db
+*.log
+
+##################################
+# Environment files
+##################################
+.env
+.env.*
+!.env.example
+
+##################################
+# .NET / ASP.NET Core
+##################################
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+##################################
+# Entity Framework
+##################################
+*.db
+*.db-shm
+*.db-wal
+
+##################################
+# Flutter / Dart
+##################################
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+build/
+
+##################################
+# IDEs
+##################################
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+##################################
+# Docker
+##################################
+**/docker-data/
+**/pgdata/
+
+##################################
+# Node (caso use ferramentas JS futuramente)
+##################################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+##################################
+# Coverage / Tests
+##################################
+coverage/
+test-results/
+
+##################################
+# OS specific
+##################################
+*.swp
