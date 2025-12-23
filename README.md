@@ -20,7 +20,7 @@ approach to reflect a real-world software development process.
 ## Tech Stack (Planned)
 
 ### Backend
-- ASP.NET Core (.NET 8)
+- ASP.NET Core (.NET 10)
 - Entity Framework Core
 - PostgreSQL
 - Docker & Docker Compose
