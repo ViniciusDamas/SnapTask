@@ -7,4 +7,5 @@ public class Column {
     public int Order { get; set; }
 
     public List<Card> Cards { get; set; } = new();
+    public Guid BoardId { get; set; }
 }
