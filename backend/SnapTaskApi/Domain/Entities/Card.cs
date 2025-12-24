@@ -8,4 +8,5 @@ public class Card
     public int Order {  get; set; }
 
     public Guid ColumnId { get; set; }
+    public Column Column { get; set; } = null!;
 }

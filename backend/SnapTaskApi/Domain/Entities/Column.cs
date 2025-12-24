@@ -8,4 +8,5 @@ public class Column {
 
     public List<Card> Cards { get; set; } = new();
     public Guid BoardId { get; set; }
+    public Board Board { get; set; } = null!;
 }
