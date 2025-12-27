@@ -1,23 +1,35 @@
 using Microsoft.EntityFrameworkCore;
+using SnapTaskApi.Application.Interfaces;
+using SnapTaskApi.Application.Services;
 using SnapTaskApi.Infrastructure.Persistence;
+using SnapTaskApi.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Controllers
+builder.Services.AddControllers();
+
+// DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+// Repositories
+builder.Services.AddScoped<IBoardRepository, BoardRepository>();
+
+// Services
+builder.Services.AddScoped<IBoardService, BoardService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Middleware pipeline
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+
 app.Run();
