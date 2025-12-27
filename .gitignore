@@ -22,6 +22,7 @@ obj/
 *.suo
 *.userosscache
 *.sln.docstates
+*.slnx
 
 ##################################
 # Entity Framework
