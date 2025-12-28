@@ -1,7 +1,11 @@
 ﻿namespace SnapTaskApi.Contracts.Requests.Columns;
 
-public class MoveColumnRequest
-{
-    public int ToOrder { get; set; }
-    public Guid BoardId { get; set; }
-}
+public record MoveColumnRequest
+(
+    int ColumnId,
+    int BoardId,
+    int? PrevColumnId, 
+    int? NextColumnId 
+);
+
+public record MoveColumnResult(int Id, int BoardId, int Order);

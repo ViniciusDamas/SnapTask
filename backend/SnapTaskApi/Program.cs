@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SnapTaskApi.Application.Interfaces;
 using SnapTaskApi.Application.Services;
-using SnapTaskApi.Application.Validators.Column;
 using SnapTaskApi.Infrastructure.Persistence;
 using SnapTaskApi.Infrastructure.Repositories;
 
@@ -22,9 +21,6 @@ builder.Services.AddScoped<IColumnRepository, ColumnRepository>();
 // Services
 builder.Services.AddScoped<IBoardService, BoardService>();
 builder.Services.AddScoped<IColumnService, ColumnService>();
-
-// Validators
-builder.Services.AddScoped<ColumnValidator>();
 
 var app = builder.Build();
 

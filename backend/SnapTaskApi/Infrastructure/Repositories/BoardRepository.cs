@@ -9,15 +9,9 @@ public sealed class BoardRepository : IBoardRepository
 {
     private readonly AppDbContext context;
 
-    public BoardRepository(AppDbContext context)
-    {
-        this.context = context;
-    }
+    public BoardRepository(AppDbContext context) => this.context = context;
 
-    public async Task AddAsync(Board board)
-    {
-        await context.Boards.AddAsync(board);
-    }
+    public async Task AddAsync(Board board) => await context.AddAsync(board);
 
     public async Task<Board?> GetByIdWithDetailsAsync(Guid id)
     {
@@ -37,11 +31,6 @@ public sealed class BoardRepository : IBoardRepository
         return await context.Boards
             .AsNoTracking()
             .ToListAsync();
-    }
-
-    public async Task<bool> ExistsAsync(Guid id)
-    {
-        return await context.Boards.AnyAsync(b => b.Id == id);
     }
 
     public Task DeleteAsync(Board board)
