@@ -1,6 +1,5 @@
 ﻿namespace SnapTaskApi.Application.Interfaces;
 
-using Microsoft.EntityFrameworkCore;
 using SnapTaskApi.Domain.Entities;
 
 public interface IBoardRepository
@@ -9,7 +8,6 @@ public interface IBoardRepository
     Task<Board?> GetByIdWithDetailsAsync(Guid id);
     Task<Board?> GetByIdAsync(Guid id);
     Task<List<Board>> GetAllAsync();
-    Task<bool> ExistsAsync(Guid id);
     Task DeleteAsync(Board board);
     Task<int> SaveChangesAsync();
 }

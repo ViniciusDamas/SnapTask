@@ -18,9 +18,6 @@ public class BoardsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] CreateBoardRequest request)
     {
-        if (request is null || string.IsNullOrWhiteSpace(request.Name))
-            return BadRequest("Board name is required.");
-
         var board = await service.CreateAsync(request.Name);
 
         return CreatedAtRoute("GetBoardById", new { id = board.Id }, board);
@@ -45,9 +42,6 @@ public class BoardsController : ControllerBase
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateBoardRequest request)
     {
-        if (request is null || string.IsNullOrWhiteSpace(request.Name))
-            return BadRequest("Board name is required.");
-
         var updated = await service.UpdateNameAsync(id, request.Name);
         if (!updated) return NotFound();
 

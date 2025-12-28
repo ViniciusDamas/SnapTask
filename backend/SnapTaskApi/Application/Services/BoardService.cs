@@ -1,8 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SnapTaskApi.Application.Interfaces;
 using SnapTaskApi.Domain.Entities;
-using SnapTaskApi.Infrastructure.Persistence;
 
 namespace SnapTaskApi.Application.Services;
 
@@ -10,16 +7,10 @@ public sealed class BoardService : IBoardService
 {
     private readonly IBoardRepository repository;
 
-    public BoardService(IBoardRepository repository)
-    {
-        this.repository = repository;
-    }
-
+    public BoardService(IBoardRepository repository) => this.repository = repository;
+    
     public async Task<Board> CreateAsync(string name)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Board name is required.", nameof(name));
-
         var board = new Board
         {
             Id = Guid.NewGuid(),
@@ -40,9 +31,6 @@ public sealed class BoardService : IBoardService
 
     public async Task<bool> UpdateNameAsync(Guid id, string name)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Board name is required.", nameof(name));
-
         var board = await repository.GetByIdAsync(id);
         if (board is null) return false;
 

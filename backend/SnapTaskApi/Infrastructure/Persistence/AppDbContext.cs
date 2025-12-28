@@ -59,7 +59,6 @@ public class AppDbContext : DbContext
                   .HasForeignKey(x => x.ColumnId)
                   .OnDelete(DeleteBehavior.Cascade);
 
-            // Ajuda a ordenar/consultar colunas por Board
             entity.HasIndex(x => new { x.BoardId, x.Order })
                   .IsUnique();
         });
