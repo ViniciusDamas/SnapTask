@@ -17,6 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Contracts\Responses\" />
+    <Folder Include="Contracts\Requests\Columns\" />
+    <Folder Include="Contracts\Requests\Cards\" />
     <Folder Include="Infrastructure\Persistence\" />
   </ItemGroup>
 

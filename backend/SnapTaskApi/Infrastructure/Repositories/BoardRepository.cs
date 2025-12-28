@@ -14,44 +14,44 @@ public sealed class BoardRepository : IBoardRepository
         this.context = context;
     }
 
-    public async Task AddAsync(Board board, CancellationToken ct = default)
+    public async Task AddAsync(Board board)
     {
-        await context.Boards.AddAsync(board, ct);
+        await context.Boards.AddAsync(board);
     }
 
-    public async Task<Board?> GetByIdWithDetailsAsync(Guid id, CancellationToken ct = default)
+    public async Task<Board?> GetByIdWithDetailsAsync(Guid id)
     {
         return await context.Boards
             .Include(b => b.Columns)
                 .ThenInclude(c => c.Cards)
-            .FirstOrDefaultAsync(b => b.Id == id, ct);
+            .FirstOrDefaultAsync(b => b.Id == id);
     }
 
-    public async Task<Board?> GetByIdAsync(Guid id, CancellationToken ct = default)
+    public async Task<Board?> GetByIdAsync(Guid id)
     {
-        return await context.Boards.FirstOrDefaultAsync(b => b.Id == id, ct);
+        return await context.Boards.FirstOrDefaultAsync(b => b.Id == id);
     }
 
-    public async Task<List<Board>> GetAllAsync(CancellationToken ct = default)
+    public async Task<List<Board>> GetAllAsync()
     {
         return await context.Boards
             .AsNoTracking()
-            .ToListAsync(ct);
+            .ToListAsync();
     }
 
-    public async Task<bool> ExistsAsync(Guid id, CancellationToken ct = default)
+    public async Task<bool> ExistsAsync(Guid id)
     {
-        return await context.Boards.AnyAsync(b => b.Id == id, ct);
+        return await context.Boards.AnyAsync(b => b.Id == id);
     }
 
-    public Task DeleteAsync(Board board, CancellationToken ct = default)
+    public Task DeleteAsync(Board board)
     {
         context.Boards.Remove(board);
         return Task.CompletedTask;
     }
 
-    public Task<int> SaveChangesAsync(CancellationToken ct = default)
+    public Task<int> SaveChangesAsync()
     {
-        return context.SaveChangesAsync(ct);
+        return context.SaveChangesAsync();
     }
 }
