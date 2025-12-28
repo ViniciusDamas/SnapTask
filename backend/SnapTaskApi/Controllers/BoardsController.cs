@@ -8,56 +8,56 @@ namespace SnapTaskApi.Controllers;
 [Route("api/[controller]")]
 public class BoardsController : ControllerBase
 {
-    private readonly IBoardService _service;
+    private readonly IBoardService service;
 
     public BoardsController(IBoardService service)
     {
-        _service = service;
+        this.service = service;
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] CreateBoardRequest request, CancellationToken ct)
+    public async Task<IActionResult> CreateAsync([FromBody] CreateBoardRequest request)
     {
         if (request is null || string.IsNullOrWhiteSpace(request.Name))
             return BadRequest("Board name is required.");
 
-        var board = await _service.CreateAsync(request.Name, ct);
+        var board = await service.CreateAsync(request.Name);
 
         return CreatedAtRoute("GetBoardById", new { id = board.Id }, board);
     }
 
     [HttpGet("{id:guid}", Name = "GetBoardById")]
-    public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id, CancellationToken ct)
+    public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
-        var board = await _service.GetByIdAsync(id, ct);
+        var board = await service.GetByIdAsync(id);
         if (board is null) return NotFound();
 
         return Ok(board);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync(CancellationToken ct)
+    public async Task<IActionResult> GetAllAsync()
     {
-        var boards = await _service.GetAllAsync(ct);
+        var boards = await service.GetAllAsync();
         return Ok(boards);
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateBoardRequest request, CancellationToken ct)
+    public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateBoardRequest request)
     {
         if (request is null || string.IsNullOrWhiteSpace(request.Name))
             return BadRequest("Board name is required.");
 
-        var updated = await _service.UpdateNameAsync(id, request.Name, ct);
+        var updated = await service.UpdateNameAsync(id, request.Name);
         if (!updated) return NotFound();
 
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken ct)
+    public async Task<IActionResult> DeleteAsync(Guid id)
     {
-        var deleted = await _service.DeleteAsync(id, ct);
+        var deleted = await service.DeleteAsync(id);
         if (!deleted) return NotFound();
 
         return NoContent();
