@@ -1,7 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace SnapTaskApi.Contracts.Requests.Boards;
 
-namespace SnapTaskApi.Contracts.Requests.Boards;
-
+using System.ComponentModel.DataAnnotations;
 public sealed class UpdateBoardRequest
 {
     [Required]

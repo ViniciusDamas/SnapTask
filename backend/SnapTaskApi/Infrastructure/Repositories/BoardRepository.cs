@@ -1,9 +1,9 @@
 ﻿namespace SnapTaskApi.Infrastructure.Repositories;
 
-using Microsoft.EntityFrameworkCore;
-using SnapTaskApi.Application.Interfaces;
 using SnapTaskApi.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using SnapTaskApi.Infrastructure.Persistence;
+using SnapTaskApi.Application.Abstractions.Repositories;
 
 public sealed class BoardRepository : IBoardRepository
 {

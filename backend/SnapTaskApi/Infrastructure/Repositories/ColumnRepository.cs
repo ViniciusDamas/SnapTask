@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SnapTaskApi.Application.Interfaces;
-using SnapTaskApi.Domain.Entities;
-using SnapTaskApi.Infrastructure.Persistence;
+﻿namespace SnapTaskApi.Infrastructure.Repositories;
 
-namespace SnapTaskApi.Infrastructure.Repositories;
+using SnapTaskApi.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using SnapTaskApi.Infrastructure.Persistence;
+using SnapTaskApi.Application.Abstractions.Repositories;
 
 public class ColumnRepository : IColumnRepository
 {
@@ -15,7 +15,16 @@ public class ColumnRepository : IColumnRepository
     {
         await context.Columns.AddAsync(column);
     }
-   
+
+    public async Task<int> GetLastOrderAsync(Guid boardId)
+    {
+        var lastOrder = await context.Columns
+        .Where(c => c.BoardId == boardId)
+        .MaxAsync(c => (int?)c.Order);
+
+        return lastOrder ?? 0;
+    }
+
     public async Task<Column?> GetByIdWithDetailsAsync(Guid id)
     {
         return await context.Columns

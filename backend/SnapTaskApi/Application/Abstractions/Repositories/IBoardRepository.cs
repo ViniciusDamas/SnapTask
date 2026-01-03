@@ -1,7 +1,6 @@
-﻿namespace SnapTaskApi.Application.Interfaces;
+﻿namespace SnapTaskApi.Application.Abstractions.Repositories;
 
 using SnapTaskApi.Domain.Entities;
-
 public interface IBoardRepository
 {
     Task AddAsync(Board board);
