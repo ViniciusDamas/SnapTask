@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using SnapTaskApi.Application.Interfaces;
-using SnapTaskApi.Application.Services;
+using SnapTaskApi.Application.UseCases.Cards;
 using SnapTaskApi.Infrastructure.Persistence;
 using SnapTaskApi.Infrastructure.Repositories;
+using SnapTaskApi.Application.UseCases.Boards;
+using SnapTaskApi.Application.UseCases.Columns;
+using SnapTaskApi.Application.Abstractions.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,10 +19,26 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Repositories
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
 builder.Services.AddScoped<IColumnRepository, ColumnRepository>();
+builder.Services.AddScoped<ICardRepository, CardRepository>();
 
-// Services
-builder.Services.AddScoped<IBoardService, BoardService>();
-builder.Services.AddScoped<IColumnService, ColumnService>();
+// UseCases
+
+    // Boards
+    builder.Services.AddScoped<CreateBoard>();
+    builder.Services.AddScoped<UpdateBoard>();
+    builder.Services.AddScoped<DeleteBoard>();
+    builder.Services.AddScoped<GetAllBoards>();
+    builder.Services.AddScoped<GetBoardById>();
+
+    // Columns
+    builder.Services.AddScoped<MoveColumn>();
+    builder.Services.AddScoped<CreateColumn>();
+    builder.Services.AddScoped<UpdateColumn>();
+    builder.Services.AddScoped<DeleteColumn>();
+    builder.Services.AddScoped<GetColumnById>();
+
+    // Cards
+    builder.Services.AddScoped<CreateCard>();
 
 var app = builder.Build();
 

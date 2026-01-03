@@ -1,7 +1,7 @@
 ﻿namespace SnapTaskApi.Infrastructure.Persistence;
 
-using Microsoft.EntityFrameworkCore;
 using SnapTaskApi.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 public class AppDbContext : DbContext
 {

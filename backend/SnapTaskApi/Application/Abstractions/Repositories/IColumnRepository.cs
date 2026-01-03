@@ -1,10 +1,10 @@
-﻿using SnapTaskApi.Domain.Entities;
+﻿namespace SnapTaskApi.Application.Abstractions.Repositories;
 
-namespace SnapTaskApi.Application.Interfaces;
-
+using SnapTaskApi.Domain.Entities;
 public interface IColumnRepository
 {
     Task AddAsync(Column column);
+    Task<int> GetLastOrderAsync(Guid boardId);
     Task<int> SaveChangesAsync();
     Task<Column?> GetByIdWithDetailsAsync(Guid id);
     Task<Column?> GetByIdAsync(Guid id);

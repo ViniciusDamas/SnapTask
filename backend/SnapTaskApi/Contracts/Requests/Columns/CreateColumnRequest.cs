@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace SnapTaskApi.Contracts.Requests.Columns;
 
-namespace SnapTaskApi.Contracts.Requests.Columns;
+using System.ComponentModel.DataAnnotations;
 public class CreateColumnRequest
 {
     [Required]

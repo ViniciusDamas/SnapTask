@@ -1,24 +1,32 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SnapTaskApi.Application.Interfaces;
-using SnapTaskApi.Contracts.Requests.Boards;
+﻿namespace SnapTaskApi.Controllers;
 
-namespace SnapTaskApi.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using SnapTaskApi.Contracts.Requests.Boards;
+using SnapTaskApi.Application.UseCases.Boards;
 
 [ApiController]
 [Route("api/[controller]")]
 public class BoardsController : ControllerBase
 {
-    private readonly IBoardService service;
+    private readonly CreateBoard create;
+    private readonly GetBoardById getById;
+    private readonly GetAllBoards getAll;
+    private readonly UpdateBoard update;
+    private readonly DeleteBoard delete;
 
-    public BoardsController(IBoardService service)
+    public BoardsController(CreateBoard create, GetBoardById getById, GetAllBoards getAll, UpdateBoard update, DeleteBoard delete)
     {
-        this.service = service;
+        this.create = create;
+        this.getById = getById;
+        this.getAll = getAll;
+        this.update = update;
+        this.delete = delete;
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] CreateBoardRequest request)
     {
-        var board = await service.CreateAsync(request.Name);
+        var board = await create.CreateAsync(request.Name);
 
         return CreatedAtRoute("GetBoardById", new { id = board.Id }, board);
     }
@@ -26,7 +34,7 @@ public class BoardsController : ControllerBase
     [HttpGet("{id:guid}", Name = "GetBoardById")]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
-        var board = await service.GetByIdAsync(id);
+        var board = await getById.GetByIdAsync(id);
         if (board is null) return NotFound();
 
         return Ok(board);
@@ -35,14 +43,14 @@ public class BoardsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
-        var boards = await service.GetAllAsync();
+        var boards = await getAll.GetAllAsync();
         return Ok(boards);
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateBoardRequest request)
     {
-        var updated = await service.UpdateNameAsync(id, request.Name);
+        var updated = await update.UpdateNameAsync(id, request.Name);
         if (!updated) return NotFound();
 
         return NoContent();
@@ -51,7 +59,7 @@ public class BoardsController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteAsync(Guid id)
     {
-        var deleted = await service.DeleteAsync(id);
+        var deleted = await delete.DeleteAsync(id);
         if (!deleted) return NotFound();
 
         return NoContent();
