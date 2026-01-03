@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace SnapTaskApi.Domain.Entities;
 
 public class Card
@@ -8,5 +10,7 @@ public class Card
     public int Order {  get; set; }
 
     public Guid ColumnId { get; set; }
+
+    [JsonIgnore]
     public Column Column { get; set; } = null!;
 }

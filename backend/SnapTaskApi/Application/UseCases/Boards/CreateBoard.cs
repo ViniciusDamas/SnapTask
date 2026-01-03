@@ -2,6 +2,7 @@
 
 using SnapTaskApi.Domain.Entities;
 using SnapTaskApi.Application.Abstractions.Repositories;
+using SnapTaskApi.Application.UseCases.Boards.Results;
 
 public class CreateBoard
 {
@@ -9,7 +10,7 @@ public class CreateBoard
 
     public CreateBoard(IBoardRepository repository) => this.repository = repository;
 
-    public async Task<Board> CreateAsync(string name)
+    public async Task<BoardSummaryResult> CreateAsync(string name)
     {
         var board = new Board
         {
@@ -20,6 +21,6 @@ public class CreateBoard
         await repository.AddAsync(board);
         await repository.SaveChangesAsync();
 
-        return board;
+        return new BoardSummaryResult(board.Id, board.Name, board.CreatedAt);
     }
 }

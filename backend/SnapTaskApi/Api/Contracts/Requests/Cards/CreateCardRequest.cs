@@ -1,4 +1,4 @@
-﻿namespace SnapTaskApi.Contracts.Requests.Cards;
+﻿namespace SnapTaskApi.Api.Contracts.Requests.Cards;
 
 using System.ComponentModel.DataAnnotations;
 public class CreateCardRequest

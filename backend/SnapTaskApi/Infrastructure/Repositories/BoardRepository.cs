@@ -1,9 +1,12 @@
 ﻿namespace SnapTaskApi.Infrastructure.Repositories;
 
-using SnapTaskApi.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using SnapTaskApi.Infrastructure.Persistence;
 using SnapTaskApi.Application.Abstractions.Repositories;
+using SnapTaskApi.Application.UseCases.Boards.Results;
+using SnapTaskApi.Application.UseCases.Cards.Results;
+using SnapTaskApi.Application.UseCases.Columns.Results;
+using SnapTaskApi.Domain.Entities;
+using SnapTaskApi.Infrastructure.Persistence;
 
 public sealed class BoardRepository : IBoardRepository
 {
@@ -13,12 +16,35 @@ public sealed class BoardRepository : IBoardRepository
 
     public async Task AddAsync(Board board) => await context.AddAsync(board);
 
-    public async Task<Board?> GetByIdWithDetailsAsync(Guid id)
+    public async Task<BoardDetailsResult?> GetByIdWithDetailsAsync(Guid id)
     {
         return await context.Boards
-            .Include(b => b.Columns)
-                .ThenInclude(c => c.Cards)
-            .FirstOrDefaultAsync(b => b.Id == id);
+            .AsNoTracking()
+            .Where(b => b.Id == id)
+            .Select(b => new BoardDetailsResult(
+                b.Id,
+                b.Name,
+                b.CreatedAt,
+                b.Columns
+                    .OrderBy(c => c.Order)
+                    .Select(c => new ColumnDetailsResult(
+                        c.Id,
+                        c.Name,
+                        c.Order,
+                        c.Cards
+                            .OrderBy(x => x.Order)
+                            .Select(x => new CardSummaryResult(
+                                x.Id,
+                                x.Title,
+                                x.Description,
+                                x.Order,
+                                x.ColumnId
+                            ))
+                            .ToList()
+                    ))
+                    .ToList()
+            ))
+            .FirstOrDefaultAsync();
     }
 
     public async Task<Board?> GetByIdAsync(Guid id)
@@ -26,10 +52,10 @@ public sealed class BoardRepository : IBoardRepository
         return await context.Boards.FirstOrDefaultAsync(b => b.Id == id);
     }
 
-    public async Task<List<Board>> GetAllAsync()
+    public async Task<List<BoardSummaryResult>> GetAllAsync()
     {
         return await context.Boards
-            .AsNoTracking()
+            .AsNoTracking().Select(b => new BoardSummaryResult(b.Id, b.Name, b.CreatedAt))
             .ToListAsync();
     }
 

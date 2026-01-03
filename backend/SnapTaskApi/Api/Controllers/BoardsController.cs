@@ -1,8 +1,8 @@
-﻿namespace SnapTaskApi.Controllers;
+﻿namespace SnapTaskApi.Api.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
-using SnapTaskApi.Contracts.Requests.Boards;
 using SnapTaskApi.Application.UseCases.Boards;
+using SnapTaskApi.Api.Contracts.Requests.Boards;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -34,7 +34,7 @@ public class BoardsController : ControllerBase
     [HttpGet("{id:guid}", Name = "GetBoardById")]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
-        var board = await getById.GetByIdAsync(id);
+        var board = await getById.GetByIdWithDetailsAsync(id);
         if (board is null) return NotFound();
 
         return Ok(board);

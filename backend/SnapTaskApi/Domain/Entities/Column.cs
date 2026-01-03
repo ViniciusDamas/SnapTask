@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace SnapTaskApi.Domain.Entities;
 
 public class Column {
@@ -8,5 +10,7 @@ public class Column {
 
     public List<Card> Cards { get; set; } = new();
     public Guid BoardId { get; set; }
+
+    [JsonIgnore]
     public Board Board { get; set; } = null!;
 }

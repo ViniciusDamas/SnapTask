@@ -1,12 +1,13 @@
 ﻿namespace SnapTaskApi.Application.Abstractions.Repositories;
 
+using SnapTaskApi.Application.UseCases.Boards.Results;
 using SnapTaskApi.Domain.Entities;
 public interface IBoardRepository
 {
     Task AddAsync(Board board);
-    Task<Board?> GetByIdWithDetailsAsync(Guid id);
+    Task<BoardDetailsResult?> GetByIdWithDetailsAsync(Guid id);
     Task<Board?> GetByIdAsync(Guid id);
-    Task<List<Board>> GetAllAsync();
+    Task<List<BoardSummaryResult>> GetAllAsync();
     Task DeleteAsync(Board board);
     Task<int> SaveChangesAsync();
 }

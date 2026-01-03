@@ -1,4 +1,4 @@
-﻿namespace SnapTaskApi.Contracts.Requests.Columns;
+﻿namespace SnapTaskApi.Api.Contracts.Requests.Columns;
 public record MoveColumnRequest
 (
     int ColumnId,

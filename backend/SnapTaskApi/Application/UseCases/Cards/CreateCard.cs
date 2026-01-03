@@ -1,7 +1,8 @@
 ﻿namespace SnapTaskApi.Application.UseCases.Cards;
 
+using SnapTaskApi.Api.Contracts.Requests.Cards;
 using SnapTaskApi.Application.Abstractions.Repositories;
-using SnapTaskApi.Contracts.Requests.Cards;
+using SnapTaskApi.Application.UseCases.Cards.Results;
 using SnapTaskApi.Domain.Entities;
 
 public class CreateCard
@@ -10,13 +11,14 @@ public class CreateCard
 
     public CreateCard(ICardRepository repository) => this.repository = repository;
 
-    public async Task<Card> AddCardAsync(CreateCardRequest request)
+    public async Task<CardSummaryResult> AddCardAsync(CreateCardRequest request)
     {
         var lastOrder = await repository.GetLastOrderAsync(request.ColumnId);
 
         var card = new Card
         {
-            Title = request.Title,
+            Id = Guid.NewGuid(),
+            Title = request.Title.Trim(),
             Description = request.Description,
             Order = lastOrder + 1000,
             ColumnId = request.ColumnId
@@ -25,6 +27,6 @@ public class CreateCard
         await repository.AddAsync(card);
         await repository.SaveChangesAsync();
 
-        return card;
+        return new CardSummaryResult(card.Id, card.Title, card.Description, card.Order, card.ColumnId);
     }
 }
