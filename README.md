@@ -11,8 +11,9 @@ approach to reflect a real-world software development process.
 
 ## Project Goals
 
-- Provide a backend API to manage boards, columns and cards
+- Provide a backend API to manage boards, columns, and cards
 - Support ordered and movable tasks (drag-and-drop friendly)
+- Apply Clean Architecture and use case–driven design
 - Serve as a learning and portfolio project with production-oriented practices
 
 ---
@@ -37,10 +38,21 @@ This repository is organized as a monorepo:
 ```text
 snaptask/
 ├── backend/
+|   └── SnapTaskApi/
 ├── frontend/
 └── docs/
 ```
 
+## Backend (Clean Architecture – simplified)
+
+```text
+SnapTaskApi/
+├── Domain/            # Entities and core domain rules
+├── Application/       # Abstractions and Use cases (Commands / Queries)
+├── Infrastructure/    # EF Core, repositories, migrations
+├── Api/               # Controllers and HTTP contracts
+└── Program.cs
+```
 ---
 
 ## Running the Backend API (Development)
