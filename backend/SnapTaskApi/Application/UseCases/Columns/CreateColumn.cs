@@ -1,7 +1,8 @@
 ﻿namespace SnapTaskApi.Application.UseCases.Columns;
 
-using SnapTaskApi.Domain.Entities;
 using SnapTaskApi.Application.Abstractions.Repositories;
+using SnapTaskApi.Application.UseCases.Columns.Results;
+using SnapTaskApi.Domain.Entities;
 
 public class CreateColumn
 {
@@ -9,7 +10,7 @@ public class CreateColumn
 
     public CreateColumn(IColumnRepository repository) => this.repository = repository;
 
-    public async Task<Column> AddAsync(Guid boardId, string name)
+    public async Task<ColumnSummaryResult> AddAsync(Guid boardId, string name)
     {
         var lastOrder = await repository.GetLastOrderAsync(boardId);
         var column = new Column
@@ -23,6 +24,6 @@ public class CreateColumn
         await repository.AddAsync(column);
         await repository.SaveChangesAsync();
 
-        return column;
+        return new ColumnSummaryResult(column.Id, column.Name, column.Order, column.BoardId);
     }
 }

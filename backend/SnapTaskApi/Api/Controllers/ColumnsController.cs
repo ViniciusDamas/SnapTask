@@ -1,8 +1,8 @@
-﻿namespace SnapTaskApi.Controllers;
+﻿namespace SnapTaskApi.Api.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
-using SnapTaskApi.Contracts.Requests.Columns;
 using SnapTaskApi.Application.UseCases.Columns;
+using SnapTaskApi.Api.Contracts.Requests.Columns;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -34,7 +34,7 @@ public class ColumnsController : ControllerBase
     [HttpGet("{id:guid}", Name = "GetByColumnId")]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
-        var column = await getById.GetByIdAsync(id);
+        var column = await getById.GetByIdWithDetailsAsync(id);
         if (column is null) return NotFound();
 
         return Ok(column);

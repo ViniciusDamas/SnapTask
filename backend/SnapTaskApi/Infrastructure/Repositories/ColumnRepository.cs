@@ -1,9 +1,11 @@
 ﻿namespace SnapTaskApi.Infrastructure.Repositories;
 
-using SnapTaskApi.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using SnapTaskApi.Infrastructure.Persistence;
 using SnapTaskApi.Application.Abstractions.Repositories;
+using SnapTaskApi.Application.UseCases.Cards.Results;
+using SnapTaskApi.Application.UseCases.Columns.Results;
+using SnapTaskApi.Domain.Entities;
+using SnapTaskApi.Infrastructure.Persistence;
 
 public class ColumnRepository : IColumnRepository
 {
@@ -25,11 +27,25 @@ public class ColumnRepository : IColumnRepository
         return lastOrder ?? 0;
     }
 
-    public async Task<Column?> GetByIdWithDetailsAsync(Guid id)
+    public async Task<ColumnDetailsResult?> GetByIdWithDetailsAsync(Guid id)
     {
         return await context.Columns
-            .Include(c => c.Cards)
-            .FirstOrDefaultAsync(c => c.Id == id);
+            .AsNoTracking()
+            .Where(c => c.Id == id)
+            .Select(c => new ColumnDetailsResult(
+                c.Id,
+                c.Name,
+                c.Order,
+                c.Cards
+                    .OrderBy(x => x.Order)
+                    .Select(x => new CardSummaryResult(
+                        x.Id,
+                        x.Title,
+                        x.Description,
+                        x.Order,
+                        x.ColumnId)
+            ).ToList()))
+            .FirstOrDefaultAsync();
     }
 
     public async Task<Column?> GetByIdAsync(Guid id)

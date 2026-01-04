@@ -13,6 +13,11 @@ public class CardRepository : ICardRepository
 
     public async Task AddAsync(Card card) => await context.Cards.AddAsync(card);
 
+    public async Task<Card?> GetByIdAsync(Guid id)
+    {
+        return await context.Cards.FirstOrDefaultAsync(c => c.Id == id);
+    }
+
     public async Task<int> GetLastOrderAsync(Guid columnId)
     {
         int? lastOrder = await context.Cards
@@ -20,6 +25,12 @@ public class CardRepository : ICardRepository
         .MaxAsync(c => (int?)c.Order);
 
         return lastOrder ?? 0;
+    }
+
+    public Task DeleteAsync(Card card)
+    {
+        context.Remove(card);
+        return Task.CompletedTask;
     }
 
     public Task<int> SaveChangesAsync()

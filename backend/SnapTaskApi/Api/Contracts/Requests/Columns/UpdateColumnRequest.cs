@@ -1,4 +1,4 @@
-﻿namespace SnapTaskApi.Contracts.Requests.Columns;
+﻿namespace SnapTaskApi.Api.Contracts.Requests.Columns;
 
 using System.ComponentModel.DataAnnotations;
 public class UpdateColumnRequest

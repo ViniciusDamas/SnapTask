@@ -1,7 +1,7 @@
-﻿namespace SnapTaskApi.Contracts.Requests.Boards;
+﻿namespace SnapTaskApi.Api.Contracts.Requests.Boards;
 
 using System.ComponentModel.DataAnnotations;
-public sealed class UpdateBoardRequest
+public sealed class CreateBoardRequest
 {
     [Required]
     public string Name { get; set; } = string.Empty;

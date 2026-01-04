@@ -39,6 +39,9 @@ builder.Services.AddScoped<ICardRepository, CardRepository>();
 
     // Cards
     builder.Services.AddScoped<CreateCard>();
+    builder.Services.AddScoped<GetCardById>();
+    builder.Services.AddScoped<UpdateCard>();
+    builder.Services.AddScoped<DeleteCard>();
 
 var app = builder.Build();
 

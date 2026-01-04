@@ -1,7 +1,7 @@
 ﻿namespace SnapTaskApi.Application.UseCases.Boards;
 
-using SnapTaskApi.Domain.Entities;
 using SnapTaskApi.Application.Abstractions.Repositories;
+using SnapTaskApi.Application.UseCases.Boards.Results;
 
 public class GetBoardById
 {
@@ -9,6 +9,6 @@ public class GetBoardById
 
     public GetBoardById(IBoardRepository repository) => this.repository = repository;
 
-    public Task<Board?> GetByIdAsync(Guid id)
+    public Task<BoardDetailsResult?> GetByIdWithDetailsAsync(Guid id)
        => repository.GetByIdWithDetailsAsync(id);
 }
