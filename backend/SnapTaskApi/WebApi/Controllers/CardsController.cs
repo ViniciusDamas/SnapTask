@@ -1,10 +1,11 @@
 ﻿namespace SnapTaskApi.Api.Controllers;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SnapTaskApi.Api.Contracts.Requests.Cards;
 using SnapTaskApi.Application.UseCases.Cards;
-using SnapTaskApi.Domain.Entities;
 
+//[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class CardsController : ControllerBase

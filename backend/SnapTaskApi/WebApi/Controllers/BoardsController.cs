@@ -1,9 +1,11 @@
 ﻿namespace SnapTaskApi.Api.Controllers;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SnapTaskApi.Application.UseCases.Boards;
 using SnapTaskApi.Api.Contracts.Requests.Boards;
+using SnapTaskApi.Application.UseCases.Boards;
 
+//[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class BoardsController : ControllerBase

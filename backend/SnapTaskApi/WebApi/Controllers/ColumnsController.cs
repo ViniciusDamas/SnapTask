@@ -1,9 +1,11 @@
 ﻿namespace SnapTaskApi.Api.Controllers;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SnapTaskApi.Application.UseCases.Columns;
 using SnapTaskApi.Api.Contracts.Requests.Columns;
+using SnapTaskApi.Application.UseCases.Columns;
 
+//[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ColumnsController : ControllerBase
