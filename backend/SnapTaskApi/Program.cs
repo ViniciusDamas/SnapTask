@@ -57,9 +57,6 @@ builder.Services
 
 builder.Services.AddScoped<JwtTokenService>();
 
-builder.Services.AddAuthentication();
-builder.Services.AddAuthorization();
-
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 

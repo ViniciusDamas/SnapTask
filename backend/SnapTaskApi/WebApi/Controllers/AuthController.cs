@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SnapTaskApi.Infrastructure.Identity;
+using SnapTaskApi.WebApi.Contracts.Requests.Auth;
 using SnapTaskApi.WebApi.Contracts.Requests.Login;
 using SnapTaskApi.WebApi.Security;
 
@@ -20,6 +21,49 @@ public class AuthController : ControllerBase
         this.jwt = jwt;
     }
 
+    [AllowAnonymous]
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterRequest req)
+    {
+        if (!string.IsNullOrWhiteSpace(req.ConfirmPassword) && req.Password != req.ConfirmPassword)
+        {
+            return BadRequest(new
+            {
+                error = "PasswordConfirmationMismatch",
+                message = "Password e ConfirmPassword não conferem."
+            });
+        }
+
+        var existing = await users.FindByEmailAsync(req.Email);
+        if (existing is not null)
+        {
+            return Conflict(new
+            {
+                error = "EmailAlreadyInUse",
+                message = "Já existe um usuário cadastrado com este e-mail."
+            });
+        }
+
+        var user = new ApplicationUser
+        {
+            Email = req.Email,
+            UserName = req.Email,
+        };
+
+        var result = await users.CreateAsync(user, req.Password);
+        if (!result.Succeeded)
+        {
+            return BadRequest(new
+            {
+                error = "IdentityCreateFailed",
+                errors = result.Errors.Select(e => new { e.Code, e.Description })
+            });
+        }
+
+        return Created(string.Empty, new { userId = user.Id, email = user.Email });
+    }
+
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest req)
     {
