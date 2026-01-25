@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snaptask_app/features/auth/ui/boards/boards_page.dart';
 import 'app_routes.dart';
 import '../../features/auth/ui/login/login_page.dart';
 import '../../features/auth/ui/register/register_page.dart';
@@ -15,6 +16,11 @@ class AppRouter {
         );
 
       case AppRoutes.login:
+      case AppRoutes.boards:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const BoardsPage(),
+        );
       case '/':
       case null:
         return MaterialPageRoute(

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:snaptask_app/core/http/api_client.dart';
 import 'package:snaptask_app/core/widgets/app_button.dart';
 import 'package:snaptask_app/core/widgets/app_text_field.dart';
 import 'package:snaptask_app/core/widgets/auth_header.dart';
+import 'package:snaptask_app/features/auth/data/auth_api.dart';
+import 'package:snaptask_app/features/auth/data/register_models.dart';
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({super.key});
@@ -11,7 +14,9 @@ class RegisterForm extends StatefulWidget {
 }
 
 class _RegisterFormState extends State<RegisterForm> {
+  late final AuthApi _authApi;
   final _formKey = GlobalKey<FormState>();
+  final _userNameCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
@@ -20,22 +25,42 @@ class _RegisterFormState extends State<RegisterForm> {
 
   @override
   void dispose() {
+    _userNameCtrl.dispose();
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
     _confirmCtrl.dispose();
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+
+    final client = ApiClient(baseUrl: 'http://localhost:8080');
+
+    _authApi = AuthApi(client);
+  }
+
   Future<void> _submit() async {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
 
+    final req = RegisterRequest(
+      userName: _userNameCtrl.text.trim(),
+      email: _emailCtrl.text.trim(),
+      password: _passwordCtrl.text,
+      confirmPassword: _confirmCtrl.text,
+    );
+
     setState(() => _loading = true);
+
     try {
-      await Future.delayed(const Duration(milliseconds: 600));
+      await _authApi.register(req);
+
       if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Registro submit OK (placeholder)')),
+        const SnackBar(content: Text('Login realizado com sucesso')),
       );
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -50,6 +75,18 @@ class _RegisterFormState extends State<RegisterForm> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const AuthHeader(title: 'Crie sua conta'),
+          AppTextField(
+            label: 'Nome de Usuário',
+            icon: Icons.person_outline,
+            keyboardType: TextInputType.text,
+            controller: _userNameCtrl,
+            validator: (v) {
+              final value = (v ?? '').trim();
+              if (value.isEmpty) return 'Nome é obrigatório';
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
           AppTextField(
             label: 'Email',
             icon: Icons.email_outlined,

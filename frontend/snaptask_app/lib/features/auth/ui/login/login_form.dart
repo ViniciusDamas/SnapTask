@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:snaptask_app/app/routes/app_routes.dart';
 import 'package:snaptask_app/app/theme/app_colors.dart';
+import 'package:snaptask_app/core/http/api_client.dart';
 import 'package:snaptask_app/core/widgets/app_button.dart';
 import 'package:snaptask_app/core/widgets/app_text_field.dart';
 import 'package:snaptask_app/core/widgets/auth_header.dart';
+import 'package:snaptask_app/features/auth/data/auth_api.dart';
+import 'package:snaptask_app/features/auth/data/login_models.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -13,6 +16,7 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  late final AuthApi _authApi;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailCtrl = TextEditingController();
   final TextEditingController _passwordCtrl = TextEditingController();
@@ -25,31 +29,36 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+
+    final client = ApiClient(baseUrl: 'http://localhost:8080');
+
+    _authApi = AuthApi(client);
+  }
+
   Future<void> _submit() async {
     final isValid = _formKey.currentState?.validate() ?? false;
-    if (!isValid) {
-      return;
-    }
+    if (!isValid) return;
 
-    final email = _emailCtrl.text.trim();
-    final password = _passwordCtrl.text;
+    final req = LoginRequest(
+      email: _emailCtrl.text.trim(),
+      password: _passwordCtrl.text,
+    );
 
-    setState(() {
-      _loading = true;
-    });
+    setState(() => _loading = true);
 
     try {
-      await Future.delayed(const Duration(seconds: 1));
-
-      debugPrint(
-        'LOGIN SUBMIT → email=$email / passwordLen=${password.length}',
-      );
+      await _authApi.login(req);
 
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Submit OK (próximo passo: chamar API)')),
+        const SnackBar(content: Text('Login realizado com sucesso')),
       );
+
+      Navigator.of(context).pushReplacementNamed(AppRoutes.boards);
     } finally {
       if (mounted) {
         setState(() => _loading = false);
@@ -113,10 +122,7 @@ class _LoginFormState extends State<LoginForm> {
           const SizedBox(height: 32),
           TextButton(
             onPressed: _loading ? null : _goToRegister,
-            child: const Text(
-              'Não tem conta? Registrar-se',
-              style: TextStyle(color: AppColors.muted),
-            ),
+            child: const Text('Não tem conta? Registrar-se'),
           ),
 
           const SizedBox(height: 12),
