@@ -7,7 +7,6 @@ class AppTheme {
       useMaterial3: false,
 
       scaffoldBackgroundColor: AppColors.bg,
-
       textTheme: const TextTheme(bodyMedium: TextStyle(color: AppColors.text)),
 
       textSelectionTheme: const TextSelectionThemeData(

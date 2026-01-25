@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'features/auth/ui/login_page.dart';
+import 'app/routes/app_router.dart';
+import 'app/routes/app_routes.dart';
 import 'app/theme/theme.dart';
 
 void main() {
@@ -14,7 +15,8 @@ class SnapTaskApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark(),
-      home: const LoginPage(),
+      initialRoute: AppRoutes.login,
+      onGenerateRoute: AppRouter.onGenerateRoute,
     );
   }
 }
