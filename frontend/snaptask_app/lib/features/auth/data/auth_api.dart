@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:snaptask_app/core/http/api_exception.dart';
 import 'package:snaptask_app/features/auth/data/register_models.dart';
 import '../../../core/http/api_client.dart';
 import '../../../core/auth/token_storage.dart';
@@ -22,16 +23,21 @@ class AuthApi {
     }
   }
 
-  Future<void> login(LoginRequest req) async {
+  Future<LoginResponse> login(LoginRequest req) async {
     try {
       final res = await _dio.post('/auth/login', data: req.toJson());
-      final parsed = LoginResponse.fromJson(res.data);
-      TokenStorage.save(parsed.token);
+
+      final data = res.data as Map<String, dynamic>;
+      return LoginResponse.fromJson(data);
     } on DioException catch (e) {
-      if (e.response?.statusCode == 401) {
-        throw AuthUnauthorizedException();
-      }
-      throw AuthException(e.message);
+      final err = e.error;
+      if (err is ApiException) throw err;
+
+      throw ApiException(
+        statusCode: e.response?.statusCode,
+        problem: null,
+        rawError: e,
+      );
     }
   }
 }

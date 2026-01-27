@@ -16,6 +16,10 @@ class AppRouter {
         );
 
       case AppRoutes.login:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const LoginPage(),
+        );
       case AppRoutes.boards:
         return MaterialPageRoute(
           settings: settings,
