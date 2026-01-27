@@ -4,5 +4,6 @@ public record BoardSummaryResult
 (
     Guid Id,
     string Name,
-    DateTime CreatedAt
+    DateTime CreatedAt,
+    Guid OwnerUserId
 );

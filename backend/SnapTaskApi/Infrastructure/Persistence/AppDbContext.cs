@@ -30,14 +30,20 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
 
             entity.Property(x => x.CreatedAt)
                   .IsRequired();
+           
+            entity.Property(x => x.OwnerUserId)
+                  .IsRequired();
 
-            // Board 1-N Columns
+
             entity.HasMany(x => x.Columns)
                   .WithOne(x => x.Board)
                   .HasForeignKey(x => x.BoardId)
                   .OnDelete(DeleteBehavior.Cascade);
 
+            entity.HasIndex(x => x.OwnerUserId);
             entity.HasIndex(x => x.Name);
+            entity.HasIndex(x => new { x.OwnerUserId, x.Name });
+
         });
 
         modelBuilder.Entity<Column>(entity =>

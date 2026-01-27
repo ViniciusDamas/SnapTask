@@ -8,6 +8,8 @@ public class GetAllBoards
     private readonly IBoardRepository repository;
 
     public GetAllBoards(IBoardRepository repository) => this.repository = repository;
-    public Task<List<BoardSummaryResult>> GetAllAsync()
-        => repository.GetAllAsync();
+    public Task<List<BoardSummaryResult>> GetAllAsync(Guid userId)
+    {
+        return repository.GetAllByUserIdAsync(userId);
+    }
 }

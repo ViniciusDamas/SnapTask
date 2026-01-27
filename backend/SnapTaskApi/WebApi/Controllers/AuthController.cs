@@ -47,7 +47,7 @@ public class AuthController : ControllerBase
         var user = new ApplicationUser
         {
             Email = req.Email,
-            UserName = req.Email,
+            UserName = req.UserName,
         };
 
         var result = await users.CreateAsync(user, req.Password);
@@ -55,12 +55,13 @@ public class AuthController : ControllerBase
         {
             return BadRequest(new
             {
-                error = "IdentityCreateFailed",
-                errors = result.Errors.Select(e => new { e.Code, e.Description })
+                errors = result.Errors.Select(e => new { code = e.Code, description = e.Description })
             });
         }
 
-        return Created(string.Empty, new { userId = user.Id, email = user.Email });
+        var token = jwt.CreateAccessToken(user);
+
+        return Created(string.Empty, new { token });
     }
 
     [AllowAnonymous]
@@ -68,10 +69,10 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginRequest req)
     {
         var user = await users.FindByEmailAsync(req.Email);
-        if (user is null) return Unauthorized();
+        if (user is null) return Unauthorized("Email ou senha incorretos");
 
         var ok = await users.CheckPasswordAsync(user, req.Password);
-        if (!ok) return Unauthorized();
+        if (!ok) return Unauthorized("Email ou senha incorretos");
 
         var token = jwt.CreateAccessToken(user);
 

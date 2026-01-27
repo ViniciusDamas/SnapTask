@@ -21,9 +21,8 @@ public sealed class JwtTokenService
 
         var claims = new List<Claim>
         {
-            // Padrão para identificar o usuário no ASP.NET Core
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Name, user.Email ?? string.Empty),
+            new(ClaimTypes.Name, user.UserName ?? string.Empty),
             new(ClaimTypes.Email, user.Email ?? string.Empty),
         };
 

@@ -52,12 +52,21 @@ public sealed class BoardRepository : IBoardRepository
         return await context.Boards.FirstOrDefaultAsync(b => b.Id == id);
     }
 
-    public async Task<List<BoardSummaryResult>> GetAllAsync()
+    public async Task<List<BoardSummaryResult>> GetAllByUserIdAsync(Guid userId)
     {
         return await context.Boards
-            .AsNoTracking().Select(b => new BoardSummaryResult(b.Id, b.Name, b.CreatedAt))
+            .AsNoTracking()
+            .Where(b => b.OwnerUserId == userId)          
+            .OrderByDescending(b => b.CreatedAt)         
+            .Select(b => new BoardSummaryResult(          
+                b.Id,
+                b.Name,
+                b.CreatedAt,
+                b.OwnerUserId
+            ))
             .ToListAsync();
     }
+
 
     public Task DeleteAsync(Board board)
     {
