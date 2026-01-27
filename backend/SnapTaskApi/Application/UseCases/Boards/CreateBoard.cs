@@ -10,17 +10,13 @@ public class CreateBoard
 
     public CreateBoard(IBoardRepository repository) => this.repository = repository;
 
-    public async Task<BoardSummaryResult> CreateAsync(string name)
+    public async Task<BoardSummaryResult> CreateAsync(string name, Guid userId)
     {
-        var board = new Board
-        {
-            Id = Guid.NewGuid(),
-            Name = name.Trim()
-        };
+        var board = new Board(name, userId);
 
         await repository.AddAsync(board);
         await repository.SaveChangesAsync();
 
-        return new BoardSummaryResult(board.Id, board.Name, board.CreatedAt);
+        return new BoardSummaryResult(board.Id, board.Name, board.CreatedAt, userId);
     }
 }

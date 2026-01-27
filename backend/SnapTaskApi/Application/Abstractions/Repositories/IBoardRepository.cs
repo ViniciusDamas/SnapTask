@@ -7,7 +7,7 @@ public interface IBoardRepository
     Task AddAsync(Board board);
     Task<BoardDetailsResult?> GetByIdWithDetailsAsync(Guid id);
     Task<Board?> GetByIdAsync(Guid id);
-    Task<List<BoardSummaryResult>> GetAllAsync();
+    Task<List<BoardSummaryResult>> GetAllByUserIdAsync(Guid userId);
     Task DeleteAsync(Board board);
     Task<int> SaveChangesAsync();
 }
