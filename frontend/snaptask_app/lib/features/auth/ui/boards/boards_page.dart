@@ -1,5 +1,6 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:snaptask_app/core/layout/app_shell.dart';
+import 'package:snaptask_app/app/routes/app_routes.dart';
 import 'package:snaptask_app/core/search/app_search.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
 import 'package:snaptask_app/features/auth/data/boards_api.dart';
@@ -199,7 +200,7 @@ class _BoardsPageState extends State<BoardsPage> {
           style: TextStyle(fontSize: 12, color: muted),
         ),
         trailing: PopupMenuButton<_BoardMenuAction>(
-          tooltip: 'Ações',
+          tooltip: 'A��es',
           padding: EdgeInsets.zero,
           splashRadius: 20,
           icon: Icon(Icons.more_vert, color: muted),
@@ -234,9 +235,7 @@ class _BoardsPageState extends State<BoardsPage> {
           ],
         ),
         onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Abrir board: ${board.name} (placeholder)')),
-          );
+          Navigator.of(context).pushNamed(AppRoutes.boardDetails(board.id));
         },
       ),
     );

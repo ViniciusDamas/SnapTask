@@ -412,7 +412,7 @@ class _AppShellState extends State<AppShell> {
             if (_isWideLayout) const VerticalDivider(width: 1),
             Expanded(
               child: Container(
-                color: scheme.background,
+                color: scheme.surface,
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: ConstrainedBox(

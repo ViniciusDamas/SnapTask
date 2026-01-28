@@ -7,6 +7,9 @@ class AppRoutes {
   static const login = '/login';
   static const register = '/register';
   static const boards = '/boards';
+  static const boardDetailsPrefix = '/boards/';
+
+  static String boardDetails(String id) => '$boardDetailsPrefix$id';
 
   static final routes = <String, WidgetBuilder>{
     login: (_) => const LoginPage(),

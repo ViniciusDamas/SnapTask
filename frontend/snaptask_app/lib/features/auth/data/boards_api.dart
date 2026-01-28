@@ -32,6 +32,11 @@ class BoardsApi {
   Future<void> delete(String id) async {
     await _dio.delete('/api/boards/$id');
   }
+
+  Future<BoardDetails> getById(String id) async {
+    final res = await _dio.get('/api/boards/$id');
+    return BoardDetails.fromJson(res.data as Map<String, dynamic>);
+  }
 }
 
 class BoardsApiException implements Exception {
