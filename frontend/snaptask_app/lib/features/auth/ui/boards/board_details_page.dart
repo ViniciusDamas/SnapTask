@@ -23,6 +23,7 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
   late final ColumnsApi _columnsApi;
   late final CardsApi _cardsApi;
   late Future<BoardDetails> _future;
+  BoardDetails? _board;
 
   @override
   void initState() {
@@ -30,15 +31,35 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
     _api = BoardsApi(ApiClient(baseUrl: 'http://localhost:8080'));
     _columnsApi = ColumnsApi(ApiClient(baseUrl: 'http://localhost:8080'));
     _cardsApi = CardsApi(ApiClient(baseUrl: 'http://localhost:8080'));
-    _future = _api.getById(widget.boardId);
+    _future = _loadBoard();
   }
 
   void _reload() {
     if (!mounted) return;
-    setState(() => _future = _api.getById(widget.boardId));
+    setState(() {
+      _future = _loadBoard();
+    });
   }
 
-  Future<void> _reloadAsync() async => _reload();
+  Future<BoardDetails> _loadBoard() async {
+    final details = await _api.getById(widget.boardId);
+    if (mounted) {
+      setState(() => _board = details);
+    }
+    return details;
+  }
+
+  void _setBoard(BoardDetails board) {
+    if (!mounted) return;
+    setState(() => _board = board);
+  }
+
+  Future<void> _reloadAsync() async {
+    _reload();
+    try {
+      await _future;
+    } catch (_) {}
+  }
 
   int _countCards(List<ColumnDetails> columns) {
     return columns.fold<int>(0, (total, c) => total + c.cards.length);
@@ -127,8 +148,9 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
       final name = controller.text.trim();
       if (name.isEmpty) return;
 
+      ColumnSummary createdColumn;
       try {
-        await _columnsApi.create(
+        createdColumn = await _columnsApi.create(
           CreateColumnRequest(boardId: widget.boardId, name: name),
         );
       } catch (e) {
@@ -140,7 +162,28 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
       }
 
       if (!mounted) return;
-      _reload();
+      final board = _board;
+      if (board == null) {
+        _reload();
+        return;
+      }
+      final updatedColumns = [
+        ...board.columns,
+        ColumnDetails(
+          id: createdColumn.id,
+          name: createdColumn.name,
+          order: createdColumn.order,
+          cards: const <CardSummary>[],
+        ),
+      ]..sort((a, b) => a.order.compareTo(b.order));
+      _setBoard(
+        BoardDetails(
+          id: board.id,
+          name: board.name,
+          createdAt: board.createdAt,
+          columns: updatedColumns,
+        ),
+      );
     } finally {
       controller.dispose();
     }
@@ -190,8 +233,9 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
       final title = titleController.text.trim();
       if (title.isEmpty) return;
 
+      CardSummary createdCard;
       try {
-        await _cardsApi.create(
+        createdCard = await _cardsApi.create(
           CreateCardRequest(
             columnId: column.id,
             title: title,
@@ -209,7 +253,36 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
       }
 
       if (!mounted) return;
-      _reload();
+      final board = _board;
+      if (board == null) {
+        _reload();
+        return;
+      }
+      final columnIndex = board.columns.indexWhere((c) => c.id == column.id);
+      if (columnIndex == -1) {
+        _reload();
+        return;
+      }
+      final target = board.columns[columnIndex];
+      final updatedCards = [...target.cards, createdCard]
+        ..sort((a, b) => a.order.compareTo(b.order));
+      final updatedColumn = ColumnDetails(
+        id: target.id,
+        name: target.name,
+        order: target.order,
+        cards: updatedCards,
+      );
+      final updatedColumns = [...board.columns];
+      updatedColumns[columnIndex] = updatedColumn;
+      updatedColumns.sort((a, b) => a.order.compareTo(b.order));
+      _setBoard(
+        BoardDetails(
+          id: board.id,
+          name: board.name,
+          createdAt: board.createdAt,
+          columns: updatedColumns,
+        ),
+      );
     } finally {
       titleController.dispose();
       descriptionController.dispose();
@@ -255,6 +328,7 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
                     PopupMenuItem(value: 'delete', child: Text('Excluir')),
                   ],
                   onSelected: (_) {
+                    // TODO: Implement rename/delete when column endpoints exist.
                     ScaffoldMessenger.of(
                       context,
                     ).showSnackBar(const SnackBar(content: Text('Em breve')));
@@ -345,20 +419,55 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
       body: FutureBuilder<BoardDetails>(
         future: _future,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            final error = snapshot.error;
-            ApiException? apiError;
-            if (error is DioException && error.error is ApiException) {
-              apiError = error.error as ApiException;
-            } else if (error is ApiException) {
-              apiError = error;
+          if (_board == null) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
             }
 
-            if (apiError?.statusCode == 404) {
+            if (snapshot.hasError) {
+              final error = snapshot.error;
+              ApiException? apiError;
+              if (error is DioException && error.error is ApiException) {
+                apiError = error.error as ApiException;
+              } else if (error is ApiException) {
+                apiError = error;
+              }
+
+              if (apiError?.statusCode == 404) {
+                return Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: scheme.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: scheme.outline),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Board não encontrado',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Esse board pode ter sido removido.',
+                          style: TextStyle(color: muted),
+                        ),
+                        const SizedBox(height: 16),
+                        FilledButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('Voltar'),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
               return Center(
                 child: Container(
                   padding: const EdgeInsets.all(24),
@@ -370,53 +479,23 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
-                        'Board não encontrado',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Esse board pode ter sido removido.',
-                        style: TextStyle(color: muted),
-                      ),
-                      const SizedBox(height: 16),
-                      FilledButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('Voltar'),
+                      Text('Erro ao carregar board: ${snapshot.error}'),
+                      const SizedBox(height: 12),
+                      OutlinedButton(
+                        onPressed: _reload,
+                        child: const Text('Tentar novamente'),
                       ),
                     ],
                   ),
                 ),
               );
             }
-
-            return Center(
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: scheme.surface,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: scheme.outline),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('Erro ao carregar board: ${snapshot.error}'),
-                    const SizedBox(height: 12),
-                    OutlinedButton(
-                      onPressed: _reload,
-                      child: const Text('Tentar novamente'),
-                    ),
-                  ],
-                ),
-              ),
-            );
           }
 
-          final details = snapshot.data!;
+          final details = _board ?? snapshot.data;
+          if (details == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
           final query = AppSearchScope.of(context).query.trim();
           final filteredColumns = _filterColumns(details.columns, query);
           final totalCards = _countCards(filteredColumns);
@@ -424,6 +503,16 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              TextButton.icon(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back),
+                label: const Text('Voltar'),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  visualDensity: VisualDensity.compact,
+                ),
+              ),
+              const SizedBox(height: 12),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

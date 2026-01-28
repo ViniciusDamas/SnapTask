@@ -18,20 +18,42 @@ class BoardsPage extends StatefulWidget {
 class _BoardsPageState extends State<BoardsPage> {
   late final BoardsApi _api;
   late Future<List<BoardSummary>> _future;
+  List<BoardSummary>? _cachedBoards;
 
   @override
   void initState() {
     super.initState();
     _api = BoardsApi(ApiClient(baseUrl: 'http://localhost:8080'));
-    _future = _api.getAll();
+    _future = _loadBoards();
   }
 
   void _reload() {
     if (!mounted) return;
-    setState(() => _future = _api.getAll());
+    setState(() {
+      _future = _loadBoards();
+    });
   }
 
-  Future<void> _reloadAsync() async => _reload();
+  Future<List<BoardSummary>> _loadBoards() async {
+    final boards = await _api.getAll();
+    _cachedBoards = boards;
+    return boards;
+  }
+
+  void _setBoards(List<BoardSummary> boards) {
+    _cachedBoards = boards;
+    if (!mounted) return;
+    setState(() {
+      _future = Future.value(boards);
+    });
+  }
+
+  Future<void> _reloadAsync() async {
+    _reload();
+    try {
+      await _future;
+    } catch (_) {}
+  }
 
   String _formatDateShort(DateTime date) {
     final local = date.toLocal();
@@ -234,8 +256,11 @@ class _BoardsPageState extends State<BoardsPage> {
             ),
           ],
         ),
-        onTap: () {
-          Navigator.of(context).pushNamed(AppRoutes.boardDetails(board.id));
+        onTap: () async {
+          await Navigator.of(context).pushNamed(
+            AppRoutes.boardDetails(board.id),
+          );
+          if (mounted) _reload();
         },
       ),
     );
@@ -243,10 +268,10 @@ class _BoardsPageState extends State<BoardsPage> {
 
   Future<void> _openCreateBoardDialog() async {
     final controller = TextEditingController();
-    bool? created;
+    BoardSummary? createdBoard;
 
     try {
-      created = await showDialog<bool>(
+      createdBoard = await showDialog<BoardSummary>(
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) {
@@ -262,11 +287,13 @@ class _BoardsPageState extends State<BoardsPage> {
                 var popped = false;
 
                 try {
-                  await _api.create(CreateBoardRequest(name: name));
+                  final created = await _api.create(
+                    CreateBoardRequest(name: name),
+                  );
 
                   if (!dialogContext.mounted) return;
                   popped = true;
-                  Navigator.of(dialogContext).pop(true);
+                  Navigator.of(dialogContext).pop(created);
                 } catch (e) {
                   if (!dialogContext.mounted) return;
                   ScaffoldMessenger.of(dialogContext).showSnackBar(
@@ -291,7 +318,7 @@ class _BoardsPageState extends State<BoardsPage> {
                   TextButton(
                     onPressed: loading
                         ? null
-                        : () => Navigator.of(dialogContext).pop(false),
+                        : () => Navigator.of(dialogContext).pop(),
                     child: const Text('Cancelar'),
                   ),
                   FilledButton(
@@ -315,7 +342,11 @@ class _BoardsPageState extends State<BoardsPage> {
     }
 
     if (!mounted) return;
-    if (created == true) {
+    if (createdBoard != null) {
+      if (_cachedBoards != null) {
+        final updated = [createdBoard!, ..._cachedBoards!];
+        _setBoards(updated);
+      }
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) _reload();
       });
@@ -324,10 +355,10 @@ class _BoardsPageState extends State<BoardsPage> {
 
   Future<void> _openEditBoardDialog(BoardSummary board) async {
     final controller = TextEditingController(text: board.name);
-    bool? updated;
+    String? updatedName;
 
     try {
-      updated = await showDialog<bool>(
+      updatedName = await showDialog<String>(
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) {
@@ -350,7 +381,7 @@ class _BoardsPageState extends State<BoardsPage> {
 
                   if (!dialogContext.mounted) return;
                   popped = true;
-                  Navigator.of(dialogContext).pop(true);
+                  Navigator.of(dialogContext).pop(name);
                 } catch (e) {
                   if (!dialogContext.mounted) return;
                   ScaffoldMessenger.of(dialogContext).showSnackBar(
@@ -375,7 +406,7 @@ class _BoardsPageState extends State<BoardsPage> {
                   TextButton(
                     onPressed: loading
                         ? null
-                        : () => Navigator.of(dialogContext).pop(false),
+                        : () => Navigator.of(dialogContext).pop(),
                     child: const Text('Cancelar'),
                   ),
                   FilledButton(
@@ -399,10 +430,25 @@ class _BoardsPageState extends State<BoardsPage> {
     }
 
     if (!mounted) return;
-    if (updated == true) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _reload();
-      });
+    if (updatedName != null) {
+      if (_cachedBoards == null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _reload();
+        });
+        return;
+      }
+      final updated = _cachedBoards!
+          .map(
+            (item) => item.id == board.id
+                ? BoardSummary(
+                    id: item.id,
+                    name: updatedName!,
+                    createdAt: item.createdAt,
+                  )
+                : item,
+          )
+          .toList();
+      _setBoards(updated);
     }
   }
 
@@ -432,7 +478,16 @@ class _BoardsPageState extends State<BoardsPage> {
     if (confirmed != true || !mounted) return;
 
     try {
+      await _api.delete(board.id);
       if (!mounted) return;
+      if (_cachedBoards == null) {
+        _reload();
+        return;
+      }
+      final updated = _cachedBoards!
+          .where((item) => item.id != board.id)
+          .toList();
+      _setBoards(updated);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(
@@ -460,7 +515,8 @@ class _BoardsPageState extends State<BoardsPage> {
         future: _future,
         builder: (context, snapshot) {
           final query = AppSearchScope.of(context).query.trim();
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting &&
+              snapshot.data == null) {
             return const Center(child: CircularProgressIndicator());
           }
 
