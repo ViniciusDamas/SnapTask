@@ -1,8 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:snaptask_app/core/layout/app_shell.dart';
+import 'package:snaptask_app/core/search/app_search.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
 import 'package:snaptask_app/features/auth/data/boards_api.dart';
 import 'package:snaptask_app/features/auth/data/boards_models.dart';
+
+enum _BoardMenuAction { edit, delete }
 
 class BoardsPage extends StatefulWidget {
   const BoardsPage({super.key});
@@ -28,6 +31,216 @@ class _BoardsPageState extends State<BoardsPage> {
   }
 
   Future<void> _reloadAsync() async => _reload();
+
+  String _formatDateShort(DateTime date) {
+    final local = date.toLocal();
+    const months = [
+      'jan',
+      'fev',
+      'mar',
+      'abr',
+      'mai',
+      'jun',
+      'jul',
+      'ago',
+      'set',
+      'out',
+      'nov',
+      'dez',
+    ];
+    final day = local.day.toString().padLeft(2, '0');
+    final month = months[local.month - 1];
+    return '$day $month ${local.year}';
+  }
+
+  Widget _buildSectionHeader({
+    required int total,
+    required Color surface,
+    required Color outline,
+    required Color muted,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: outline),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Seus boards',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Organize seus projetos em um só lugar.',
+                  style: TextStyle(fontSize: 13, color: muted),
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: surface,
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(color: outline),
+                  ),
+                  child: Text(
+                    '$total boards',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: muted,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 16),
+          FilledButton.icon(
+            onPressed: _openCreateBoardDialog,
+            icon: const Icon(Icons.add),
+            label: const Text('Novo'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState({
+    required String query,
+    required Color surface,
+    required Color outline,
+    required Color muted,
+  }) {
+    final isFiltered = query.isNotEmpty;
+
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: outline),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isFiltered ? Icons.search_off : Icons.dashboard_outlined,
+              size: 48,
+              color: muted,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              isFiltered ? 'Nenhum resultado' : 'Nenhum board ainda',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              isFiltered
+                  ? 'Nenhum board encontrado para "$query".'
+                  : 'Crie seu primeiro board para começar.',
+              style: TextStyle(color: muted),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            FilledButton.icon(
+              onPressed: _openCreateBoardDialog,
+              icon: const Icon(Icons.add),
+              label: Text(isFiltered ? 'Novo board' : 'Criar board'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBoardCard({
+    required BoardSummary board,
+    required ColorScheme scheme,
+    required Color surface,
+    required Color outline,
+    required Color muted,
+  }) {
+    return Card(
+      elevation: 0,
+      color: surface,
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: outline),
+      ),
+      child: ListTile(
+        dense: true,
+        visualDensity: VisualDensity.compact,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        minLeadingWidth: 24,
+        leading: CircleAvatar(
+          radius: 16,
+          backgroundColor: scheme.primary.withOpacity(0.12),
+          child: Icon(Icons.dashboard, size: 16, color: scheme.primary),
+        ),
+        title: Text(
+          board.name,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+        subtitle: Text(
+          'Criado em ${_formatDateShort(board.createdAt)}',
+          style: TextStyle(fontSize: 12, color: muted),
+        ),
+        trailing: PopupMenuButton<_BoardMenuAction>(
+          tooltip: 'Ações',
+          padding: EdgeInsets.zero,
+          splashRadius: 20,
+          icon: Icon(Icons.more_vert, color: muted),
+          onSelected: (value) {
+            if (value == _BoardMenuAction.edit) {
+              _openEditBoardDialog(board);
+            } else if (value == _BoardMenuAction.delete) {
+              _confirmDelete(board);
+            }
+          },
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              value: _BoardMenuAction.edit,
+              child: Row(
+                children: [
+                  Icon(Icons.edit_outlined, size: 18, color: scheme.onSurface),
+                  const SizedBox(width: 8),
+                  const Text('Editar'),
+                ],
+              ),
+            ),
+            PopupMenuItem(
+              value: _BoardMenuAction.delete,
+              child: Row(
+                children: [
+                  Icon(Icons.delete_outline, size: 18, color: scheme.error),
+                  const SizedBox(width: 8),
+                  const Text('Excluir'),
+                ],
+              ),
+            ),
+          ],
+        ),
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Abrir board: ${board.name} (placeholder)')),
+          );
+        },
+      ),
+    );
+  }
 
   Future<void> _openCreateBoardDialog() async {
     final controller = TextEditingController();
@@ -220,9 +433,7 @@ class _BoardsPageState extends State<BoardsPage> {
     if (confirmed != true || !mounted) return;
 
     try {
-      await _api.delete(board.id);
       if (!mounted) return;
-      _reload();
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(
@@ -235,199 +446,112 @@ class _BoardsPageState extends State<BoardsPage> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final accent = scheme.primary;
-    final background = scheme.background;
     final surface = scheme.surface;
-    final outline = scheme.outline;
-
-    final textTheme = Theme.of(context).textTheme;
-    final muted =
-        textTheme.bodySmall?.color ?? scheme.onSurface.withOpacity(0.65);
-    final softSurface = scheme.primary.withOpacity(0.04);
-    final avatarBg = scheme.primary.withOpacity(0.12);
-
+    final outline = scheme.outline.withOpacity(0.7);
+    final muted = scheme.onSurface.withOpacity(0.6);
     return AppShell(
       title: 'SnapTask',
       titleWidget: Image.asset(
-        'assets/images/logo_full.png',
+        'assets/images/logo_mini.png',
         height: 28,
         fit: BoxFit.contain,
         semanticLabel: 'SnapTask',
       ),
-      body: Container(
-        color: background,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: FutureBuilder<List<BoardSummary>>(
-            future: _future,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
+      body: FutureBuilder<List<BoardSummary>>(
+        future: _future,
+        builder: (context, snapshot) {
+          final query = AppSearchScope.of(context).query.trim();
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-              if (snapshot.hasError) {
-                return Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: softSurface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: outline),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Erro ao carregar boards: ${snapshot.error}'),
-                        const SizedBox(height: 12),
-                        OutlinedButton(
-                          onPressed: _reload,
-                          child: const Text('Tentar novamente'),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
-              final boards = snapshot.data ?? [];
-
-              if (boards.isEmpty) {
-                return Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: softSurface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: outline),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.dashboard_outlined, size: 48),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'Nenhum board ainda',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text('Crie seu primeiro board para começar.'),
-                        const SizedBox(height: 16),
-                        FilledButton.icon(
-                          onPressed: _openCreateBoardDialog,
-                          icon: const Icon(Icons.add),
-                          label: const Text('Criar board'),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
-              return RefreshIndicator(
-                color: accent,
-                backgroundColor: surface,
-                onRefresh: _reloadAsync,
-                child: ListView.separated(
-                  itemCount: boards.length + 1,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
-                  itemBuilder: (_, i) {
-                    if (i == 0) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Seus boards',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    'Organize seus projetos em um só lugar.',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: muted,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            FilledButton.icon(
-                              onPressed: _openCreateBoardDialog,
-                              icon: const Icon(Icons.add),
-                              label: const Text('Novo'),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-
-                    final b = boards[i - 1];
-
-                    return Card(
-                      elevation: 0,
-                      color: surface,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        side: BorderSide(color: outline),
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 4,
-                        ),
-                        leading: CircleAvatar(
-                          backgroundColor: avatarBg,
-                          child: Icon(Icons.dashboard, color: scheme.primary),
-                        ),
-                        title: Text(
-                          b.name,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Text(
-                          'Criado em ${b.createdAt.toLocal()}',
-                          style: TextStyle(color: muted),
-                        ),
-                        trailing: Wrap(
-                          spacing: 4,
-                          children: [
-                            IconButton(
-                              tooltip: 'Editar',
-                              icon: const Icon(Icons.edit_outlined),
-                              onPressed: () => _openEditBoardDialog(b),
-                            ),
-                            IconButton(
-                              tooltip: 'Excluir',
-                              icon: const Icon(Icons.delete_outline),
-                              onPressed: () => _confirmDelete(b),
-                            ),
-                          ],
-                        ),
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Abrir board: ${b.name} (placeholder)',
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
+          if (snapshot.hasError) {
+            return Center(
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: surface,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: outline),
                 ),
-              );
-            },
-          ),
-        ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Erro ao carregar boards: ${snapshot.error}'),
+                    const SizedBox(height: 12),
+                    OutlinedButton(
+                      onPressed: _reload,
+                      child: const Text('Tentar novamente'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          final boards = snapshot.data ?? [];
+          final normalized = query.toLowerCase();
+          final filtered = normalized.isEmpty
+              ? boards
+              : boards
+                    .where((b) => b.name.toLowerCase().contains(normalized))
+                    .toList();
+
+          if (filtered.isEmpty) {
+            return _buildEmptyState(
+              query: query,
+              surface: surface,
+              outline: outline,
+              muted: muted,
+            );
+          }
+
+          return RefreshIndicator(
+            color: accent,
+            backgroundColor: surface,
+            onRefresh: _reloadAsync,
+            child: ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: filtered.length + 1,
+              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              itemBuilder: (_, i) {
+                if (i == 0) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Boards',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: muted,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildSectionHeader(
+                        total: filtered.length,
+                        surface: surface,
+                        outline: outline,
+                        muted: muted,
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  );
+                }
+
+                final board = filtered[i - 1];
+                return _buildBoardCard(
+                  board: board,
+                  scheme: scheme,
+                  surface: surface,
+                  outline: outline,
+                  muted: muted,
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

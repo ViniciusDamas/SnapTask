@@ -5,9 +5,6 @@ class ProblemDetails {
   final String? detail;
   final String? instance;
   final String? traceId;
-
-  /// Para ValidationProblemDetails (400)
-  /// Formato típico: { "errors": { "Email": ["msg1", "msg2"], "Password": ["..."] } }
   final Map<String, List<String>>? errors;
 
   ProblemDetails({
@@ -36,7 +33,6 @@ class ProblemDetails {
       });
     }
 
-    // traceId pode vir como extension no ProblemDetails
     final traceId = json['traceId']?.toString();
 
     return ProblemDetails(
@@ -52,15 +48,12 @@ class ProblemDetails {
     );
   }
 
-  /// Mensagem útil para UI (fallback)
   String get userMessage {
-    // Preferir detail
     if (detail != null && detail!.trim().isNotEmpty) return detail!;
     if (title != null && title!.trim().isNotEmpty) return title!;
     return 'Ocorreu um erro inesperado.';
   }
 
-  /// Flatten de errors para mostrar numa snackbar/toast
   List<String> get allValidationMessages {
     if (errors == null) return const [];
     final list = <String>[];

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColorsLight {
   // Base
-  static const bg = Color(0xFFFFFFFF);
+  static const bg = Color(0xFFF7F8FA);
   static const surface = Color(0xFFFFFFFF);
 
   // Texto

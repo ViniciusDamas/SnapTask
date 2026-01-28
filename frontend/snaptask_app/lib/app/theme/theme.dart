@@ -47,6 +47,15 @@ class AppTheme {
       outline: AppColorsLight.border,
     );
 
+    final hover = scheme.primary.withOpacity(0.06);
+    final pressed = scheme.primary.withOpacity(0.12);
+    final overlay = MaterialStateProperty.resolveWith<Color?>((states) {
+      if (states.contains(MaterialState.pressed)) return pressed;
+      if (states.contains(MaterialState.hovered)) return hover;
+      if (states.contains(MaterialState.focused)) return hover;
+      return null;
+    });
+
     return ThemeData(
       useMaterial3: false,
       colorScheme: scheme,
@@ -66,6 +75,40 @@ class AppTheme {
       ),
 
       dividerTheme: const DividerThemeData(color: AppColorsLight.border),
+
+      iconButtonTheme: IconButtonThemeData(
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all(const CircleBorder()),
+          overlayColor: overlay,
+        ),
+      ),
+
+      filledButtonTheme: FilledButtonThemeData(
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+          ),
+          overlayColor: overlay,
+        ),
+      ),
+
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+          ),
+          overlayColor: overlay,
+        ),
+      ),
+
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+          ),
+          overlayColor: overlay,
+        ),
+      ),
 
       textTheme: const TextTheme(
         bodyMedium: TextStyle(color: AppColorsLight.text),
