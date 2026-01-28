@@ -30,7 +30,7 @@ public class ColumnsController : ControllerBase
     { 
         var column = await create.AddAsync(request.BoardId, request.Name);
 
-        return CreatedAtRoute("GetByColumnId", new { id = column.Id, column });     
+        return Created(string.Empty, column);
     }
 
     [HttpGet("{id:guid}", Name = "GetByColumnId")]
