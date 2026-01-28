@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:snaptask_app/app/routes/app_routes.dart';
 import 'package:snaptask_app/app/theme/theme.dart';
+import 'package:snaptask_app/features/auth/ui/boards/board_details_page.dart';
 
 void main() {
   runApp(const SnapTaskApp());
@@ -41,6 +42,16 @@ class _SnapTaskAppState extends State<SnapTaskApp> {
             if (!mounted) return;
             setState(() => _mode = nextMode);
           });
+        }
+
+        final name = settings.name ?? '';
+        if (name.startsWith(AppRoutes.boardDetailsPrefix) &&
+            name.length > AppRoutes.boardDetailsPrefix.length) {
+          final boardId = name.substring(AppRoutes.boardDetailsPrefix.length);
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => BoardDetailsPage(boardId: boardId),
+          );
         }
 
         final builder = AppRoutes.routes[settings.name];

@@ -38,8 +38,6 @@ class AppTheme {
       onPrimary: Colors.white,
       secondary: AppColorsLight.accent,
       onSecondary: Colors.white,
-      background: AppColorsLight.bg,
-      onBackground: AppColorsLight.text,
       surface: AppColorsLight.surface,
       onSurface: AppColorsLight.text,
       error: Color(0xFFB42318),
@@ -47,17 +45,26 @@ class AppTheme {
       outline: AppColorsLight.border,
     );
 
+    final hover = scheme.primary.withOpacity(0.06);
+    final pressed = scheme.primary.withOpacity(0.12);
+    final overlay = WidgetStateProperty.resolveWith<Color?>((states) {
+      if (states.contains(WidgetState.pressed)) return pressed;
+      if (states.contains(WidgetState.hovered)) return hover;
+      if (states.contains(WidgetState.focused)) return hover;
+      return null;
+    });
+
     return ThemeData(
       useMaterial3: false,
       colorScheme: scheme,
       primaryColor: scheme.primary,
-      scaffoldBackgroundColor: scheme.background,
+      scaffoldBackgroundColor: scheme.surface,
 
       appBarTheme: AppBarTheme(
-        backgroundColor: scheme.background,
-        foregroundColor: scheme.onBackground,
+        backgroundColor: scheme.surface,
+        foregroundColor: scheme.onSurface,
         elevation: 0,
-        iconTheme: IconThemeData(color: scheme.onBackground),
+        iconTheme: IconThemeData(color: scheme.onSurface),
         titleTextStyle: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w600,
@@ -66,6 +73,40 @@ class AppTheme {
       ),
 
       dividerTheme: const DividerThemeData(color: AppColorsLight.border),
+
+      iconButtonTheme: IconButtonThemeData(
+        style: ButtonStyle(
+          shape: WidgetStateProperty.all(const CircleBorder()),
+          overlayColor: overlay,
+        ),
+      ),
+
+      filledButtonTheme: FilledButtonThemeData(
+        style: ButtonStyle(
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+          ),
+          overlayColor: overlay,
+        ),
+      ),
+
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+          ),
+          overlayColor: overlay,
+        ),
+      ),
+
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: ButtonStyle(
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+          ),
+          overlayColor: overlay,
+        ),
+      ),
 
       textTheme: const TextTheme(
         bodyMedium: TextStyle(color: AppColorsLight.text),

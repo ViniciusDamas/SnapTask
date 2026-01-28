@@ -158,8 +158,9 @@ class _LoginFormState extends State<LoginForm> {
             validator: (value) {
               if (_emailApiError != null) return _emailApiError;
               if (value == null || value.isEmpty) return 'Email é obrigatório';
-              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value))
+              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                 return 'Email inválido';
+              }
               return null;
             },
           ),
@@ -175,8 +176,9 @@ class _LoginFormState extends State<LoginForm> {
               if (_passwordApiError != null) return _passwordApiError;
 
               if (value == null || value.isEmpty) return 'Senha é obrigatória';
-              if (value.length < 6)
+              if (value.length < 6) {
                 return 'A senha deve ter ao menos 6 caracteres';
+              }
               return null;
             },
           ),
