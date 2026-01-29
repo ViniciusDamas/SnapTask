@@ -10,7 +10,8 @@ import 'package:snaptask_app/features/boards/data/boards_models.dart';
 enum _BoardMenuAction { edit, delete }
 
 class BoardsPage extends StatefulWidget {
-  const BoardsPage({super.key});
+  final VoidCallback onToggleTheme;
+  const BoardsPage({super.key, required this.onToggleTheme});
 
   @override
   State<BoardsPage> createState() => _BoardsPageState();
@@ -223,7 +224,7 @@ class _BoardsPageState extends State<BoardsPage> {
           style: TextStyle(fontSize: 12, color: muted),
         ),
         trailing: PopupMenuButton<_BoardMenuAction>(
-          tooltip: 'A��es',
+          tooltip: 'Ações',
           padding: EdgeInsets.zero,
           splashRadius: 20,
           icon: Icon(Icons.more_vert, color: muted),
@@ -501,17 +502,20 @@ class _BoardsPageState extends State<BoardsPage> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final accent = scheme.primary;
-    final surface = scheme.surface;
-    final outline = scheme.outline.withOpacity(0.7);
+    final canvas = scheme.surface;
+    final panel = scheme.surfaceVariant;
+    final outline = scheme.outline;
+    final outlineSoft = scheme.outlineVariant;
     final muted = scheme.onSurface.withOpacity(0.6);
     return AppShell(
       title: 'SnapTask',
       titleWidget: Image.asset(
-        'assets/images/logo_mini.png',
+        'assets/images/logo.png',
         height: 28,
         fit: BoxFit.contain,
         semanticLabel: 'SnapTask',
       ),
+      onToggleTheme: widget.onToggleTheme,
       body: FutureBuilder<List<BoardSummary>>(
         future: _future,
         builder: (context, snapshot) {
@@ -526,7 +530,7 @@ class _BoardsPageState extends State<BoardsPage> {
               child: Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: surface,
+                  color: panel,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: outline),
                 ),
@@ -556,7 +560,7 @@ class _BoardsPageState extends State<BoardsPage> {
           if (filtered.isEmpty) {
             return _buildEmptyState(
               query: query,
-              surface: surface,
+              surface: panel,
               outline: outline,
               muted: muted,
             );
@@ -564,7 +568,7 @@ class _BoardsPageState extends State<BoardsPage> {
 
           return RefreshIndicator(
             color: accent,
-            backgroundColor: surface,
+            backgroundColor: canvas,
             onRefresh: _reloadAsync,
             child: ListView.separated(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -587,8 +591,8 @@ class _BoardsPageState extends State<BoardsPage> {
                       const SizedBox(height: 12),
                       _buildSectionHeader(
                         total: filtered.length,
-                        surface: surface,
-                        outline: outline,
+                        surface: panel,
+                        outline: outlineSoft,
                         muted: muted,
                       ),
                       const SizedBox(height: 16),
@@ -600,7 +604,7 @@ class _BoardsPageState extends State<BoardsPage> {
                 return _buildBoardCard(
                   board: board,
                   scheme: scheme,
-                  surface: surface,
+                  surface: panel,
                   outline: outline,
                   muted: muted,
                 );

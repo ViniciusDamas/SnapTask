@@ -1,19 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:snaptask_app/features/auth/ui/login/login_page.dart';
-import 'package:snaptask_app/features/auth/ui/register/register_page.dart';
-import 'package:snaptask_app/features/boards/ui/boards_page.dart';
-
 class AppRoutes {
+  // Rotas simples
   static const login = '/login';
   static const register = '/register';
   static const boards = '/boards';
+
+  // Prefixo para rotas dinâmicas
   static const boardDetailsPrefix = '/boards/';
 
+  // Helper para gerar rota de detalhes
   static String boardDetails(String id) => '$boardDetailsPrefix$id';
-
-  static final routes = <String, WidgetBuilder>{
-    login: (_) => const LoginPage(),
-    register: (_) => const RegisterPage(),
-    boards: (_) => const BoardsPage(),
-  };
 }

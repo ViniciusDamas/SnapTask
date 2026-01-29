@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:snaptask_app/core/theme/app_colors.dart';
-
 class AuthCard extends StatelessWidget {
   final Widget child;
 
@@ -8,15 +6,16 @@ class AuthCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Center(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 420),
         padding: const EdgeInsets.all(30),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: scheme.surface,
           borderRadius: BorderRadius.circular(15),
-          border: const Border(
-            top: BorderSide(color: Color(0xFF2A2A2A), width: 2),
+          border: Border(
+            top: BorderSide(color: scheme.outline, width: 2),
           ),
         ),
         child: child,

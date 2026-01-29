@@ -11,22 +11,11 @@ class SnapTaskApp extends StatefulWidget {
 }
 
 class _SnapTaskAppState extends State<SnapTaskApp> {
-  ThemeMode _mode = ThemeMode.light;
+  ThemeMode _mode = ThemeMode.dark;
 
-  ThemeMode _modeForRoute(String? routeName) {
-    if (routeName == AppRoutes.login || routeName == AppRoutes.register) {
-      return ThemeMode.dark;
-    }
-    return ThemeMode.light;
-  }
-
-  void _syncThemeMode(String? routeName) {
-    final nextMode = _modeForRoute(routeName);
-    if (nextMode == _mode) return;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      setState(() => _mode = nextMode);
+  void _toggleTheme() {
+    setState(() {
+      _mode = _mode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
     });
   }
 
@@ -39,8 +28,7 @@ class _SnapTaskAppState extends State<SnapTaskApp> {
       themeMode: _mode,
       initialRoute: AppRoutes.login,
       onGenerateRoute: (settings) {
-        _syncThemeMode(settings.name);
-        return AppRouter.onGenerateRoute(settings);
+        return AppRouter.onGenerateRoute(settings, _toggleTheme);
       },
       onUnknownRoute: AppRouter.onUnknownRoute,
     );

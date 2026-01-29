@@ -14,8 +14,13 @@ import 'package:snaptask_app/features/columns/data/columns_models.dart';
 
 class BoardDetailsPage extends StatefulWidget {
   final String boardId;
+  final VoidCallback onToggleTheme;
 
-  const BoardDetailsPage({super.key, required this.boardId});
+  const BoardDetailsPage({
+    super.key,
+    required this.boardId,
+    required this.onToggleTheme,
+  });
 
   @override
   State<BoardDetailsPage> createState() => _BoardDetailsPageState();
@@ -300,9 +305,9 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
       width: 300,
       margin: const EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
-        color: scheme.surface,
+        color: scheme.surfaceVariant,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: scheme.outline.withOpacity(0.5)),
+        border: Border.all(color: scheme.outline),
       ),
       child: Column(
         children: [
@@ -349,7 +354,7 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
               itemBuilder: (_, index) {
                 final card = column.cards[index];
                 return Material(
-                  color: scheme.surface,
+                  color: scheme.surfaceVariant,
                   borderRadius: BorderRadius.circular(12),
                   clipBehavior: Clip.antiAlias,
                   child: InkWell(
@@ -359,9 +364,7 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: scheme.outline.withOpacity(0.4),
-                        ),
+                        border: Border.all(color: scheme.outlineVariant),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -414,11 +417,12 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
     return AppShell(
       title: 'SnapTask',
       titleWidget: Image.asset(
-        'assets/images/logo_mini.png',
+        'assets/images/logo.png',
         height: 28,
         fit: BoxFit.contain,
         semanticLabel: 'SnapTask',
       ),
+      onToggleTheme: widget.onToggleTheme,
       body: FutureBuilder<BoardDetails>(
         future: _future,
         builder: (context, snapshot) {
@@ -441,7 +445,7 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
                   child: Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: scheme.surface,
+                      color: scheme.surfaceVariant,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: scheme.outline),
                     ),
@@ -475,7 +479,7 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
                 child: Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: scheme.surface,
+                    color: scheme.surfaceVariant,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: scheme.outline),
                   ),

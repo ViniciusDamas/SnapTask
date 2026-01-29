@@ -6,7 +6,10 @@ import 'package:snaptask_app/features/boards/ui/board_details_page.dart';
 import 'package:snaptask_app/features/boards/ui/boards_page.dart';
 
 class AppRouter {
-  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+  static Route<dynamic> onGenerateRoute(
+    RouteSettings settings,
+    VoidCallback onToggleTheme,
+  ) {
     final name = settings.name;
 
     if (name != null &&
@@ -15,7 +18,8 @@ class AppRouter {
       final boardId = name.substring(AppRoutes.boardDetailsPrefix.length);
       return MaterialPageRoute(
         settings: settings,
-        builder: (_) => BoardDetailsPage(boardId: boardId),
+        builder: (_) =>
+            BoardDetailsPage(boardId: boardId, onToggleTheme: onToggleTheme),
       );
     }
 
@@ -34,7 +38,7 @@ class AppRouter {
       case AppRoutes.boards:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => const BoardsPage(),
+          builder: (_) => BoardsPage(onToggleTheme: onToggleTheme),
         );
       case '/':
       case null:
