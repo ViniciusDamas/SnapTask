@@ -1,13 +1,16 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:snaptask_app/app/shell/app_shell.dart';
+import 'package:snaptask_app/core/config/env.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
-import 'package:snaptask_app/core/http/api_exception.dart';
-import 'package:snaptask_app/core/layout/app_shell.dart';
-import 'package:snaptask_app/core/search/app_search.dart';
-import 'package:snaptask_app/features/auth/data/boards_api.dart';
-import 'package:snaptask_app/features/auth/data/boards_models.dart';
-import 'package:snaptask_app/features/auth/data/cards_api.dart';
-import 'package:snaptask_app/features/auth/data/columns_api.dart';
+import 'package:snaptask_app/core/http/exceptions/api_exception.dart';
+import 'package:snaptask_app/core/widgets/app_search.dart';
+import 'package:snaptask_app/features/boards/data/boards_api.dart';
+import 'package:snaptask_app/features/boards/data/boards_models.dart';
+import 'package:snaptask_app/features/cards/data/cards_api.dart';
+import 'package:snaptask_app/features/cards/data/cards_models.dart';
+import 'package:snaptask_app/features/columns/data/columns_api.dart';
+import 'package:snaptask_app/features/columns/data/columns_models.dart';
 
 class BoardDetailsPage extends StatefulWidget {
   final String boardId;
@@ -28,9 +31,9 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
   @override
   void initState() {
     super.initState();
-    _api = BoardsApi(ApiClient(baseUrl: 'http://localhost:8080'));
-    _columnsApi = ColumnsApi(ApiClient(baseUrl: 'http://localhost:8080'));
-    _cardsApi = CardsApi(ApiClient(baseUrl: 'http://localhost:8080'));
+    _api = BoardsApi(ApiClient(baseUrl: Env.baseUrl));
+    _columnsApi = ColumnsApi(ApiClient(baseUrl: Env.baseUrl));
+    _cardsApi = CardsApi(ApiClient(baseUrl: Env.baseUrl));
     _future = _loadBoard();
   }
 
@@ -205,12 +208,12 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
                 TextField(
                   controller: titleController,
                   autofocus: true,
-                  decoration: const InputDecoration(labelText: 'Título'),
+                  decoration: const InputDecoration(labelText: 'T�tulo'),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: descriptionController,
-                  decoration: const InputDecoration(labelText: 'Descrição'),
+                  decoration: const InputDecoration(labelText: 'Descri��o'),
                   maxLines: 3,
                 ),
               ],
@@ -446,7 +449,7 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Text(
-                          'Board não encontrado',
+                          'Board n�o encontrado',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,

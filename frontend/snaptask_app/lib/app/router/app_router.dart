@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:snaptask_app/features/auth/ui/boards/board_details_page.dart';
-import 'package:snaptask_app/features/auth/ui/boards/boards_page.dart';
-import 'app_routes.dart';
-import '../../features/auth/ui/login/login_page.dart';
-import '../../features/auth/ui/register/register_page.dart';
+import 'package:snaptask_app/app/router/app_routes.dart';
+import 'package:snaptask_app/features/auth/ui/login/login_page.dart';
+import 'package:snaptask_app/features/auth/ui/register/register_page.dart';
+import 'package:snaptask_app/features/boards/ui/board_details_page.dart';
+import 'package:snaptask_app/features/boards/ui/boards_page.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {

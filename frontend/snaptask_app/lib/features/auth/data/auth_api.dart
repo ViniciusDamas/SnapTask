@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:snaptask_app/core/http/api_exception.dart';
+import 'package:snaptask_app/core/http/api_client.dart';
+import 'package:snaptask_app/core/http/exceptions/api_exception.dart';
+import 'package:snaptask_app/core/storage/token_storage.dart';
 import 'package:snaptask_app/features/auth/data/register_models.dart';
-import '../../../core/http/api_client.dart';
-import '../../../core/auth/token_storage.dart';
 import 'login_models.dart';
 
 class AuthApi {

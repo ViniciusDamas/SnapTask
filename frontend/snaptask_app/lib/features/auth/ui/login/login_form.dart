@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:snaptask_app/app/routes/app_routes.dart';
-import 'package:snaptask_app/app/theme/app_colors.dart';
-import 'package:snaptask_app/core/auth/token_storage.dart';
+import 'package:snaptask_app/app/router/app_routes.dart';
+import 'package:snaptask_app/core/config/env.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
-import 'package:snaptask_app/core/http/api_exception.dart';
+import 'package:snaptask_app/core/http/exceptions/api_exception.dart';
+import 'package:snaptask_app/core/storage/token_storage.dart';
+import 'package:snaptask_app/core/theme/app_colors.dart';
 import 'package:snaptask_app/core/widgets/app_button.dart';
 import 'package:snaptask_app/core/widgets/app_text_field.dart';
 import 'package:snaptask_app/core/widgets/auth_header.dart';
@@ -32,7 +33,7 @@ class _LoginFormState extends State<LoginForm> {
   void initState() {
     super.initState();
 
-    final client = ApiClient(baseUrl: 'http://localhost:8080');
+    final client = ApiClient(baseUrl: Env.baseUrl);
     _authApi = AuthApi(client);
     _emailCtrl.addListener(() {
       if (_emailApiError != null) {

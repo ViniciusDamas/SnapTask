@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snaptask_app/app/routes/app_routes.dart';
-import 'package:snaptask_app/core/auth/token_storage.dart';
-import 'package:snaptask_app/core/search/app_search.dart';
+import 'package:snaptask_app/app/router/app_routes.dart';
+import 'package:snaptask_app/core/storage/token_storage.dart';
+import 'package:snaptask_app/core/widgets/app_search.dart';
 
 class AppShell extends StatefulWidget {
   final Widget body;

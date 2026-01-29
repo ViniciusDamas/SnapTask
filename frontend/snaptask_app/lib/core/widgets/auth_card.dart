@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:snaptask_app/app/theme/app_colors.dart';
+import 'package:snaptask_app/core/theme/app_colors.dart';
 
 class AuthCard extends StatelessWidget {
   final Widget child;

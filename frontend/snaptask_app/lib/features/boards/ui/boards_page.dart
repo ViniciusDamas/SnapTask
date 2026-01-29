@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:snaptask_app/core/layout/app_shell.dart';
-import 'package:snaptask_app/app/routes/app_routes.dart';
-import 'package:snaptask_app/core/search/app_search.dart';
+import 'package:snaptask_app/app/router/app_routes.dart';
+import 'package:snaptask_app/app/shell/app_shell.dart';
+import 'package:snaptask_app/core/config/env.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
-import 'package:snaptask_app/features/auth/data/boards_api.dart';
-import 'package:snaptask_app/features/auth/data/boards_models.dart';
+import 'package:snaptask_app/core/widgets/app_search.dart';
+import 'package:snaptask_app/features/boards/data/boards_api.dart';
+import 'package:snaptask_app/features/boards/data/boards_models.dart';
 
 enum _BoardMenuAction { edit, delete }
 
@@ -23,7 +24,7 @@ class _BoardsPageState extends State<BoardsPage> {
   @override
   void initState() {
     super.initState();
-    _api = BoardsApi(ApiClient(baseUrl: 'http://localhost:8080'));
+    _api = BoardsApi(ApiClient(baseUrl: Env.baseUrl));
     _future = _loadBoards();
   }
 
@@ -257,9 +258,9 @@ class _BoardsPageState extends State<BoardsPage> {
           ],
         ),
         onTap: () async {
-          await Navigator.of(context).pushNamed(
-            AppRoutes.boardDetails(board.id),
-          );
+          await Navigator.of(
+            context,
+          ).pushNamed(AppRoutes.boardDetails(board.id));
           if (mounted) _reload();
         },
       ),
@@ -344,7 +345,7 @@ class _BoardsPageState extends State<BoardsPage> {
     if (!mounted) return;
     if (createdBoard != null) {
       if (_cachedBoards != null) {
-        final updated = [createdBoard!, ..._cachedBoards!];
+        final updated = [createdBoard, ..._cachedBoards!];
         _setBoards(updated);
       }
       WidgetsBinding.instance.addPostFrameCallback((_) {
