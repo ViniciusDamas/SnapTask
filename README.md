@@ -6,7 +6,7 @@ This repository is developed **incrementally**, following a **milestone‑based 
 
 ---
 
-## 🎯 Project Goals
+## Project Goals
 
 * Provide a backend API to manage **Boards**, **Columns**, and **Cards**
 * Support **ordered and movable tasks** (drag‑and‑drop friendly)
@@ -15,7 +15,7 @@ This repository is developed **incrementally**, following a **milestone‑based 
 
 ---
 
-## 🧱 Tech Stack
+## Tech Stack
 
 ### Backend
 
@@ -34,7 +34,7 @@ This repository is developed **incrementally**, following a **milestone‑based 
 
 ---
 
-## 📦 Project Structure (Monorepo)
+## Project Structure (Monorepo)
 
 ```text
 snaptask/
@@ -48,7 +48,7 @@ snaptask/
 
 ---
 
-## 🧠 Backend Architecture (Clean Architecture – simplified)
+## Backend Architecture (Clean Architecture – simplified)
 
 ```text
 SnapTaskApi/
@@ -81,7 +81,7 @@ Each entity supports ordering to enable future drag‑and‑drop operations.
 
 ---
 
-## 📱 Frontend (Flutter)
+## Frontend (Flutter)
 
 The frontend is under active development and already includes:
 
@@ -119,7 +119,7 @@ The structure follows a **feature‑first approach**, keeping UI, data access, a
 
 ---
 
-## ▶️ Running the Backend API (Development)
+## Running the Backend API (Development)
 
 ### Prerequisites
 
@@ -181,7 +181,7 @@ http://localhost:8080
 
 ---
 
-## 🐳 Optional: Run API + Database with Docker
+## Optional: Run API + Database with Docker
 
 ```bash
 docker compose up -d --build
@@ -191,7 +191,7 @@ docker compose up -d --build
 
 ---
 
-## 🖼️ Screenshots & Demo
+## Screenshots & Demo
 
 > *(Placeholders – to be updated)*
 
@@ -205,7 +205,7 @@ docker compose up -d --build
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 * ✅ Core domain entities (Board, Column, Card)
 * ✅ Persistence with EF Core + PostgreSQL
@@ -219,7 +219,7 @@ docker compose up -d --build
 
 ---
 
-## 📌 Notes
+## Notes
 
 * Database schema is managed via **EF Core migrations**
 * Migrations must be applied before first API run
