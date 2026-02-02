@@ -4,6 +4,7 @@ import 'package:snaptask_app/app/shell/app_shell.dart';
 import 'package:snaptask_app/core/config/env.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
 import 'package:snaptask_app/core/widgets/app_search.dart';
+import 'package:snaptask_app/core/widgets/confirmation_dialog.dart';
 import 'package:snaptask_app/features/boards/data/boards_api.dart';
 import 'package:snaptask_app/features/boards/data/boards_models.dart';
 
@@ -227,6 +228,8 @@ class _BoardsPageState extends State<BoardsPage> {
           tooltip: 'Ações',
           padding: EdgeInsets.zero,
           splashRadius: 20,
+          position: PopupMenuPosition.under,
+          color: scheme.surface,
           icon: Icon(Icons.more_vert, color: muted),
           onSelected: (value) {
             if (value == _BoardMenuAction.edit) {
@@ -458,22 +461,7 @@ class _BoardsPageState extends State<BoardsPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Excluir board'),
-          content: Text(
-            'Tem certeza que deseja excluir "${board.name}"? Essa ação não pode ser desfeita.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancelar'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Excluir'),
-            ),
-          ],
-        );
+        return ConfirmDeleteDialog(objectName: board.name);
       },
     );
 

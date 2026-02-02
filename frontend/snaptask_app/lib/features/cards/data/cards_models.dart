@@ -41,3 +41,29 @@ class CreateCardRequest {
     'description': description,
   };
 }
+
+class UpdateCardRequest {
+  final String? title;
+  final String? description;
+  final String? status;
+
+  UpdateCardRequest({this.title, this.description, this.status});
+
+  UpdateCardRequest copyWith({
+    String? title,
+    String? description,
+    String? status,
+  }) {
+    return UpdateCardRequest(
+      title: title ?? this.title,
+      description: description ?? this.description,
+      status: status ?? this.status,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    if (title != null) 'title': title,
+    if (description != null) 'description': description,
+    if (status != null) 'status': status,
+  };
+}

@@ -11,4 +11,12 @@ class ColumnsApi {
     final res = await _dio.post('/api/columns', data: req.toJson());
     return ColumnSummary.fromJson(res.data as Map<String, dynamic>);
   }
+
+  Future<void> updateColumn(String columnId, String newName) async {
+    await _dio.put('/api/columns/$columnId', data: {'name': newName});
+  }
+
+  Future<void> delete(String columnId) async {
+    await _dio.delete('/api/columns/$columnId');
+  }
 }

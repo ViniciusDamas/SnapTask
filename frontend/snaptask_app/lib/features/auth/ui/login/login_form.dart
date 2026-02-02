@@ -171,6 +171,7 @@ class _LoginFormState extends State<LoginForm> {
           AppTextField(
             label: 'Senha',
             icon: Icons.lock_outline,
+            onFieldSubmitted: (_) => _submit(),
             obscureText: true,
             controller: _passwordCtrl,
             validator: (value) {

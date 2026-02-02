@@ -32,6 +32,14 @@ class CreateColumnRequest {
   Map<String, dynamic> toJson() => {'boardId': boardId, 'name': name};
 }
 
+class UpdateColumnRequest {
+  final String name;
+
+  UpdateColumnRequest({required this.name});
+
+  Map<String, dynamic> toJson() => {'name': name};
+}
+
 class ColumnDetails {
   final String id;
   final String name;

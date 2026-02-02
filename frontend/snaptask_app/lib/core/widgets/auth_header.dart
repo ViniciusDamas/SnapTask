@@ -15,7 +15,7 @@ class AuthHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final logoAsset = 'assets/images/logo_mini2.png';
+    final logoAsset = 'assets/images/logo_mini_light.png';
     final titleStyle = Theme.of(context).textTheme.headlineSmall?.copyWith(
       color: scheme.onSurface,
       fontWeight: FontWeight.bold,

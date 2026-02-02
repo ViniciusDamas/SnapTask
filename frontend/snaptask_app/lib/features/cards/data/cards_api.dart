@@ -11,4 +11,12 @@ class CardsApi {
     final res = await _dio.post('/api/cards', data: req.toJson());
     return CardSummary.fromJson(res.data as Map<String, dynamic>);
   }
+
+  Future<void> update(String cardId, UpdateCardRequest req) async {
+    await _dio.put('/api/cards/$cardId', data: req.toJson());
+  }
+
+  Future<void> delete(String cardId) async {
+    await _dio.delete('/api/cards/$cardId');
+  }
 }

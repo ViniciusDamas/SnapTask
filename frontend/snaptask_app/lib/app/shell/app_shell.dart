@@ -48,14 +48,21 @@ class _AppShellState extends State<AppShell> {
 
   bool get _isWideLayout => MediaQuery.sizeOf(context).width >= 900;
 
-  void _showSnack(String msg) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-  }
-
   void _onSelect(int index) {
     setState(() => _selectedIndex = index);
-    _showSnack('Selecionado: ${_destinations[index].label}');
+    switch (index) {
+      case 0:
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil(AppRoutes.boards, (route) => false);
+      case 1:
+        showAboutDialog(
+          context: context,
+          applicationName: 'SnapTask',
+          applicationVersion: '1.0.0',
+          applicationLegalese: '© 2024 SnapTask Inc.',
+        );
+    }
   }
 
   void _logout() {
@@ -220,6 +227,8 @@ class _AppShellState extends State<AppShell> {
       tooltip: 'Conta',
       padding: EdgeInsets.zero,
       splashRadius: 24,
+      position: PopupMenuPosition.under,
+      color: scheme.surface,
       borderRadius: BorderRadius.circular(999),
       onSelected: (value) {
         if (value == _UserMenuAction.logout) {
@@ -342,7 +351,7 @@ class _AppShellState extends State<AppShell> {
 
     return Container(
       width: width,
-      color: scheme.background,
+      color: scheme.surface,
       child: Column(
         children: [
           const SizedBox(height: 16),

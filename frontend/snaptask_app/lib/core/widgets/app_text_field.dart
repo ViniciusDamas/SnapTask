@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class AppTextField extends StatefulWidget {
   final TextEditingController? controller;
   final String? Function(String?)? validator;
@@ -6,6 +7,8 @@ class AppTextField extends StatefulWidget {
   final IconData icon;
   final bool obscureText;
   final TextInputType? keyboardType;
+  final ValueChanged<String>? onFieldSubmitted;
+  final TextInputAction? textInputAction;
 
   const AppTextField({
     super.key,
@@ -15,6 +18,8 @@ class AppTextField extends StatefulWidget {
     this.validator,
     this.obscureText = false,
     this.keyboardType,
+    this.onFieldSubmitted,
+    this.textInputAction,
   });
 
   @override
@@ -38,6 +43,8 @@ class _AppTextFieldState extends State<AppTextField> {
     return TextFormField(
       controller: widget.controller,
       validator: widget.validator,
+      onFieldSubmitted: widget.onFieldSubmitted,
+      textInputAction: widget.textInputAction,
       style: TextStyle(color: scheme.onSurface),
       cursorColor: scheme.onSurface,
       obscureText: _obscure,
