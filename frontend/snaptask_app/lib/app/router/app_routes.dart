@@ -1,10 +1,7 @@
 class AppRoutes {
-  // Rotas simples
   static const login = '/login';
   static const register = '/register';
-  static const boards = '/boards';
-
-  // Prefixo para rotas dinâmicas
+  static const home = '/home';
   static const boardDetailsPrefix = '/boards/';
 
   // Helper para gerar rota de detalhes

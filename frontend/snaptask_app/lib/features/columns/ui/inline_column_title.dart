@@ -73,13 +73,20 @@ class _InlineColumnTitleState extends State<InlineColumnTitle> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return TextField(
       controller: _controller,
       autofocus: false,
       onSubmitted: (_) => _saveTitle(),
       decoration: InputDecoration(
         border: InputBorder.none,
-        fillColor: Colors.transparent,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
+        errorBorder: InputBorder.none,
+        focusedErrorBorder: InputBorder.none,
+        fillColor: scheme.surfaceVariant,
+        focusColor: scheme.surface,
         isDense: true,
         suffixIcon: _saving
             ? const SizedBox(

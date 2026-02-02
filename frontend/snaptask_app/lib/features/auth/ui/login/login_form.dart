@@ -82,7 +82,7 @@ class _LoginFormState extends State<LoginForm> {
         const SnackBar(content: Text('Login realizado com sucesso')),
       );
 
-      Navigator.of(context).pushReplacementNamed(AppRoutes.boards);
+      Navigator.of(context).pushReplacementNamed(AppRoutes.home);
     } on ApiException catch (e) {
       if (!mounted) return;
 

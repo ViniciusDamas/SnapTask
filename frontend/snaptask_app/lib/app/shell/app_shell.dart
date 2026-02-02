@@ -54,7 +54,7 @@ class _AppShellState extends State<AppShell> {
       case 0:
         Navigator.of(
           context,
-        ).pushNamedAndRemoveUntil(AppRoutes.boards, (route) => false);
+        ).pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
       case 1:
         showAboutDialog(
           context: context,
@@ -91,9 +91,9 @@ class _AppShellState extends State<AppShell> {
 
   Widget _buildSearchBar(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final outline = scheme.outline.withOpacity(0.7);
-    final hintColor = scheme.onSurface.withOpacity(0.55);
-    final iconColor = scheme.onSurface.withOpacity(0.7);
+    final outline = scheme.outline.withValues(alpha: 0.7);
+    final hintColor = scheme.onSurface.withValues(alpha: 0.55);
+    final iconColor = scheme.onSurface.withValues(alpha: 0.7);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final themeIcon = isDark
         ? Icons.light_mode_outlined
@@ -108,7 +108,7 @@ class _AppShellState extends State<AppShell> {
           return Container(
             height: 36,
             decoration: BoxDecoration(
-              color: scheme.surfaceVariant,
+              color: scheme.surfaceContainerHigh,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: borderColor),
             ),

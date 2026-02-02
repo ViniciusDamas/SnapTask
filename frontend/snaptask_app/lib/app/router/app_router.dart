@@ -3,7 +3,7 @@ import 'package:snaptask_app/app/router/app_routes.dart';
 import 'package:snaptask_app/features/auth/ui/login/login_page.dart';
 import 'package:snaptask_app/features/auth/ui/register/register_page.dart';
 import 'package:snaptask_app/features/boards/ui/board_details_page.dart';
-import 'package:snaptask_app/features/boards/ui/boards_page.dart';
+import 'package:snaptask_app/features/home/home_page.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(
@@ -35,10 +35,10 @@ class AppRouter {
           settings: settings,
           builder: (_) => const LoginPage(),
         );
-      case AppRoutes.boards:
+      case AppRoutes.home:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => BoardsPage(onToggleTheme: onToggleTheme),
+          builder: (_) => HomePage(onToggleTheme: onToggleTheme),
         );
       case '/':
       case null:

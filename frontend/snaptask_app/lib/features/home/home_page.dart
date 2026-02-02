@@ -10,15 +10,15 @@ import 'package:snaptask_app/features/boards/data/boards_models.dart';
 
 enum _BoardMenuAction { edit, delete }
 
-class BoardsPage extends StatefulWidget {
+class HomePage extends StatefulWidget {
   final VoidCallback onToggleTheme;
-  const BoardsPage({super.key, required this.onToggleTheme});
+  const HomePage({super.key, required this.onToggleTheme});
 
   @override
-  State<BoardsPage> createState() => _BoardsPageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _BoardsPageState extends State<BoardsPage> {
+class _HomePageState extends State<HomePage> {
   late final BoardsApi _api;
   late Future<List<BoardSummary>> _future;
   List<BoardSummary>? _cachedBoards;

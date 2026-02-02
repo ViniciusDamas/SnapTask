@@ -29,11 +29,9 @@ class _CardWidgetState extends State<CardWidget> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.light;
     final baseBorder = scheme.outlineVariant;
-    final hoverBorder = isDark
-        ? scheme.onSurface.withOpacity(0.35)
-        : scheme.onSurface.withOpacity(0.25);
+    final hoverBorder = isDark ? scheme.onSurface : scheme.onSurface;
     final borderColor = _hovered ? hoverBorder : baseBorder;
     final borderWidth = _hovered ? 1.5 : 1.0;
     final isDone = widget.status == CardStatus.done;
