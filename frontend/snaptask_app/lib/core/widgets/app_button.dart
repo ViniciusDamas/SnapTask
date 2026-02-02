@@ -18,32 +18,35 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final bg = backgroundColor ?? scheme.primary;
+    final fg = scheme.onPrimary;
     return SizedBox(
       width: double.infinity,
       height: height,
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-          backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
-          foregroundColor: Colors.white,
+          backgroundColor: bg,
+          foregroundColor: fg,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
         onPressed: loading ? null : onPressed,
         child: loading
-            ? const SizedBox(
+            ? SizedBox(
                 width: 18,
                 height: 18,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: Colors.white,
+                  color: fg,
                 ),
               )
             : Text(
                 label,
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.white,
+                  color: fg,
                   fontWeight: FontWeight.bold,
                 ),
               ),

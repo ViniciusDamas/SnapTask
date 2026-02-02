@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import '../../../core/http/api_client.dart';
-import 'boards_models.dart';
+import 'package:snaptask_app/core/http/api_client.dart';
+import 'package:snaptask_app/features/boards/data/boards_models.dart';
 
 class BoardsApi {
   final Dio _dio;

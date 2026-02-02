@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import '../auth/token_storage.dart';
-import 'api_exception.dart';
-import 'problem_details.dart';
+import 'package:snaptask_app/core/http/exceptions/api_exception.dart';
+import 'package:snaptask_app/core/http/interceptors/auth_interceptor.dart';
+import 'package:snaptask_app/core/http/problem_details.dart';
 
 class ApiClient {
   final Dio dio;
@@ -14,24 +14,16 @@ class ApiClient {
         baseUrl: baseUrl,
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          'Accept': 'application/json,',
         },
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
       ),
     );
 
+    dio.interceptors.add(AuthInterceptor());
     dio.interceptors.add(
       InterceptorsWrapper(
-        onRequest: (options, handler) {
-          final token = TokenStorage.token;
-
-          if (token != null && token.isNotEmpty) {
-            options.headers['Authorization'] = 'Bearer $token';
-          }
-
-          handler.next(options);
-        },
         onError: (e, handler) {
           final apiEx = _mapDioErrorToApiException(e);
           handler.reject(

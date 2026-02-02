@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snaptask_app/core/config/env.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
 import 'package:snaptask_app/core/widgets/app_button.dart';
 import 'package:snaptask_app/core/widgets/app_text_field.dart';
@@ -36,7 +37,7 @@ class _RegisterFormState extends State<RegisterForm> {
   void initState() {
     super.initState();
 
-    final client = ApiClient(baseUrl: 'http://localhost:8080');
+    final client = ApiClient(baseUrl: Env.baseUrl);
 
     _authApi = AuthApi(client);
   }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:snaptask_app/app/theme/app_colors.dart';
 
 class AppTextField extends StatefulWidget {
   final TextEditingController? controller;
@@ -8,6 +7,8 @@ class AppTextField extends StatefulWidget {
   final IconData icon;
   final bool obscureText;
   final TextInputType? keyboardType;
+  final ValueChanged<String>? onFieldSubmitted;
+  final TextInputAction? textInputAction;
 
   const AppTextField({
     super.key,
@@ -17,6 +18,8 @@ class AppTextField extends StatefulWidget {
     this.validator,
     this.obscureText = false,
     this.keyboardType,
+    this.onFieldSubmitted,
+    this.textInputAction,
   });
 
   @override
@@ -35,12 +38,15 @@ class _AppTextFieldState extends State<AppTextField> {
   @override
   Widget build(BuildContext context) {
     final isPasswordField = widget.obscureText;
+    final scheme = Theme.of(context).colorScheme;
 
     return TextFormField(
       controller: widget.controller,
       validator: widget.validator,
-      style: const TextStyle(color: AppColors.text),
-      cursorColor: AppColors.text,
+      onFieldSubmitted: widget.onFieldSubmitted,
+      textInputAction: widget.textInputAction,
+      style: TextStyle(color: scheme.onSurface),
+      cursorColor: scheme.onSurface,
       obscureText: _obscure,
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
@@ -50,7 +56,7 @@ class _AppTextFieldState extends State<AppTextField> {
             ? IconButton(
                 icon: Icon(
                   _obscure ? Icons.visibility_off : Icons.visibility,
-                  color: AppColors.text,
+                  color: scheme.onSurface.withOpacity(0.7),
                 ),
                 onPressed: () {
                   setState(() {

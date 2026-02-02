@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:snaptask_app/core/layout/app_shell.dart';
-import 'package:snaptask_app/app/routes/app_routes.dart';
-import 'package:snaptask_app/core/search/app_search.dart';
+import 'package:snaptask_app/app/router/app_routes.dart';
+import 'package:snaptask_app/app/shell/app_shell.dart';
+import 'package:snaptask_app/core/config/env.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
-import 'package:snaptask_app/features/auth/data/boards_api.dart';
-import 'package:snaptask_app/features/auth/data/boards_models.dart';
+import 'package:snaptask_app/core/widgets/app_search.dart';
+import 'package:snaptask_app/core/widgets/confirmation_dialog.dart';
+import 'package:snaptask_app/features/boards/data/boards_api.dart';
+import 'package:snaptask_app/features/boards/data/boards_models.dart';
 
 enum _BoardMenuAction { edit, delete }
 
 class BoardsPage extends StatefulWidget {
-  const BoardsPage({super.key});
+  final VoidCallback onToggleTheme;
+  const BoardsPage({super.key, required this.onToggleTheme});
 
   @override
   State<BoardsPage> createState() => _BoardsPageState();
@@ -23,7 +26,7 @@ class _BoardsPageState extends State<BoardsPage> {
   @override
   void initState() {
     super.initState();
-    _api = BoardsApi(ApiClient(baseUrl: 'http://localhost:8080'));
+    _api = BoardsApi(ApiClient(baseUrl: Env.baseUrl));
     _future = _loadBoards();
   }
 
@@ -222,9 +225,11 @@ class _BoardsPageState extends State<BoardsPage> {
           style: TextStyle(fontSize: 12, color: muted),
         ),
         trailing: PopupMenuButton<_BoardMenuAction>(
-          tooltip: 'A��es',
+          tooltip: 'Ações',
           padding: EdgeInsets.zero,
           splashRadius: 20,
+          position: PopupMenuPosition.under,
+          color: scheme.surface,
           icon: Icon(Icons.more_vert, color: muted),
           onSelected: (value) {
             if (value == _BoardMenuAction.edit) {
@@ -257,9 +262,9 @@ class _BoardsPageState extends State<BoardsPage> {
           ],
         ),
         onTap: () async {
-          await Navigator.of(context).pushNamed(
-            AppRoutes.boardDetails(board.id),
-          );
+          await Navigator.of(
+            context,
+          ).pushNamed(AppRoutes.boardDetails(board.id));
           if (mounted) _reload();
         },
       ),
@@ -344,7 +349,7 @@ class _BoardsPageState extends State<BoardsPage> {
     if (!mounted) return;
     if (createdBoard != null) {
       if (_cachedBoards != null) {
-        final updated = [createdBoard!, ..._cachedBoards!];
+        final updated = [createdBoard, ..._cachedBoards!];
         _setBoards(updated);
       }
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -456,22 +461,7 @@ class _BoardsPageState extends State<BoardsPage> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Excluir board'),
-          content: Text(
-            'Tem certeza que deseja excluir "${board.name}"? Essa ação não pode ser desfeita.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancelar'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Excluir'),
-            ),
-          ],
-        );
+        return ConfirmDeleteDialog(objectName: board.name);
       },
     );
 
@@ -500,17 +490,20 @@ class _BoardsPageState extends State<BoardsPage> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final accent = scheme.primary;
-    final surface = scheme.surface;
-    final outline = scheme.outline.withOpacity(0.7);
+    final canvas = scheme.surface;
+    final panel = scheme.surfaceVariant;
+    final outline = scheme.outline;
+    final outlineSoft = scheme.outlineVariant;
     final muted = scheme.onSurface.withOpacity(0.6);
     return AppShell(
       title: 'SnapTask',
       titleWidget: Image.asset(
-        'assets/images/logo_mini.png',
+        'assets/images/logo.png',
         height: 28,
         fit: BoxFit.contain,
         semanticLabel: 'SnapTask',
       ),
+      onToggleTheme: widget.onToggleTheme,
       body: FutureBuilder<List<BoardSummary>>(
         future: _future,
         builder: (context, snapshot) {
@@ -525,7 +518,7 @@ class _BoardsPageState extends State<BoardsPage> {
               child: Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: surface,
+                  color: panel,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: outline),
                 ),
@@ -555,7 +548,7 @@ class _BoardsPageState extends State<BoardsPage> {
           if (filtered.isEmpty) {
             return _buildEmptyState(
               query: query,
-              surface: surface,
+              surface: panel,
               outline: outline,
               muted: muted,
             );
@@ -563,7 +556,7 @@ class _BoardsPageState extends State<BoardsPage> {
 
           return RefreshIndicator(
             color: accent,
-            backgroundColor: surface,
+            backgroundColor: canvas,
             onRefresh: _reloadAsync,
             child: ListView.separated(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -586,8 +579,8 @@ class _BoardsPageState extends State<BoardsPage> {
                       const SizedBox(height: 12),
                       _buildSectionHeader(
                         total: filtered.length,
-                        surface: surface,
-                        outline: outline,
+                        surface: panel,
+                        outline: outlineSoft,
                         muted: muted,
                       ),
                       const SizedBox(height: 16),
@@ -599,7 +592,7 @@ class _BoardsPageState extends State<BoardsPage> {
                 return _buildBoardCard(
                   board: board,
                   scheme: scheme,
-                  surface: surface,
+                  surface: panel,
                   outline: outline,
                   muted: muted,
                 );

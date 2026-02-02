@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:snaptask_app/app/theme/app_colors.dart';
 
 class AuthHeader extends StatelessWidget {
   final String title;
@@ -15,23 +14,22 @@ class AuthHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final logoAsset = 'assets/images/logo_mini_light.png';
     final titleStyle = Theme.of(context).textTheme.headlineSmall?.copyWith(
-      color: AppColors.text,
+      color: scheme.onSurface,
       fontWeight: FontWeight.bold,
     );
 
     final subtitleStyle = Theme.of(
       context,
-    ).textTheme.bodyMedium?.copyWith(color: AppColors.muted);
+    ).textTheme.bodyMedium?.copyWith(color: scheme.onSurface.withOpacity(0.7));
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         if (showLogo) ...[
-          const Image(
-            image: AssetImage('assets/images/logo_mini_light.png'),
-            height: 40,
-          ),
+          Image(image: AssetImage(logoAsset), height: 40),
           const SizedBox(height: 24),
         ],
         Text(title, style: titleStyle),

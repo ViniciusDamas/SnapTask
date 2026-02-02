@@ -1,4 +1,4 @@
-import 'problem_details.dart';
+import 'package:snaptask_app/core/http/problem_details.dart';
 
 class ApiException implements Exception {
   final int? statusCode;

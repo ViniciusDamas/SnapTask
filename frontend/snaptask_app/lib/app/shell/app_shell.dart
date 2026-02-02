@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:snaptask_app/app/routes/app_routes.dart';
-import 'package:snaptask_app/core/auth/token_storage.dart';
-import 'package:snaptask_app/core/search/app_search.dart';
+import 'package:snaptask_app/app/router/app_routes.dart';
+import 'package:snaptask_app/core/storage/token_storage.dart';
+import 'package:snaptask_app/core/widgets/app_search.dart';
 
 class AppShell extends StatefulWidget {
   final Widget body;
   final String title;
   final Widget? titleWidget;
+  final VoidCallback onToggleTheme;
 
   const AppShell({
     super.key,
     required this.body,
     required this.title,
     this.titleWidget,
+    required this.onToggleTheme,
   });
 
   @override
@@ -46,14 +48,21 @@ class _AppShellState extends State<AppShell> {
 
   bool get _isWideLayout => MediaQuery.sizeOf(context).width >= 900;
 
-  void _showSnack(String msg) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-  }
-
   void _onSelect(int index) {
     setState(() => _selectedIndex = index);
-    _showSnack('Selecionado: ${_destinations[index].label}');
+    switch (index) {
+      case 0:
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil(AppRoutes.boards, (route) => false);
+      case 1:
+        showAboutDialog(
+          context: context,
+          applicationName: 'SnapTask',
+          applicationVersion: '1.0.0',
+          applicationLegalese: '© 2024 SnapTask Inc.',
+        );
+    }
   }
 
   void _logout() {
@@ -62,6 +71,14 @@ class _AppShellState extends State<AppShell> {
     Navigator.of(
       context,
     ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
+  }
+
+  void _toggleThemeFromSearch() {
+    widget.onToggleTheme();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (_searchFocus.canRequestFocus) _searchFocus.requestFocus();
+    });
   }
 
   @override
@@ -74,9 +91,13 @@ class _AppShellState extends State<AppShell> {
 
   Widget _buildSearchBar(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final outline = scheme.outline.withOpacity(0.45);
+    final outline = scheme.outline.withOpacity(0.7);
     final hintColor = scheme.onSurface.withOpacity(0.55);
     final iconColor = scheme.onSurface.withOpacity(0.7);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeIcon = isDark
+        ? Icons.light_mode_outlined
+        : Icons.dark_mode_outlined;
 
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 560),
@@ -85,10 +106,10 @@ class _AppShellState extends State<AppShell> {
         builder: (context, _) {
           final borderColor = _searchFocus.hasFocus ? scheme.primary : outline;
           return Container(
-            height: 40,
+            height: 36,
             decoration: BoxDecoration(
-              color: scheme.surface,
-              borderRadius: BorderRadius.circular(999),
+              color: scheme.surfaceVariant,
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(color: borderColor),
             ),
             alignment: Alignment.center,
@@ -133,17 +154,25 @@ class _AppShellState extends State<AppShell> {
                 AnimatedBuilder(
                   animation: _search,
                   builder: (context, _) {
-                    if (_search.query.trim().isEmpty) {
-                      return const SizedBox.shrink();
-                    }
-                    return IconButton(
-                      tooltip: 'Limpar',
-                      icon: Icon(Icons.close, size: 18, color: iconColor),
-                      onPressed: () {
-                        _search.clear();
-                        _searchText.clear();
-                        _searchFocus.requestFocus();
-                      },
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (_search.query.trim().isNotEmpty)
+                          IconButton(
+                            tooltip: 'Limpar',
+                            icon: Icon(Icons.close, size: 18, color: iconColor),
+                            onPressed: () {
+                              _search.clear();
+                              _searchText.clear();
+                              _searchFocus.requestFocus();
+                            },
+                          ),
+                        IconButton(
+                          tooltip: isDark ? 'Tema claro' : 'Tema escuro',
+                          icon: Icon(themeIcon, size: 18, color: iconColor),
+                          onPressed: _toggleThemeFromSearch,
+                        ),
+                      ],
                     );
                   },
                 ),
@@ -198,6 +227,8 @@ class _AppShellState extends State<AppShell> {
       tooltip: 'Conta',
       padding: EdgeInsets.zero,
       splashRadius: 24,
+      position: PopupMenuPosition.under,
+      color: scheme.surface,
       borderRadius: BorderRadius.circular(999),
       onSelected: (value) {
         if (value == _UserMenuAction.logout) {
@@ -217,7 +248,7 @@ class _AppShellState extends State<AppShell> {
         ),
       ],
       child: Material(
-        color: scheme.surface,
+        color: scheme.surfaceVariant,
         shape: CircleBorder(side: BorderSide(color: border)),
         clipBehavior: Clip.antiAlias,
         child: Padding(
@@ -356,7 +387,9 @@ class _AppShellState extends State<AppShell> {
   }
 
   Widget _buildDrawer() {
+    final scheme = Theme.of(context).colorScheme;
     return Drawer(
+      backgroundColor: scheme.background,
       child: SafeArea(
         child: Column(
           children: [

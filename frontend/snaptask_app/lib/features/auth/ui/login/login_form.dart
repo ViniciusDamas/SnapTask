@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:snaptask_app/app/routes/app_routes.dart';
-import 'package:snaptask_app/app/theme/app_colors.dart';
-import 'package:snaptask_app/core/auth/token_storage.dart';
+import 'package:snaptask_app/app/router/app_routes.dart';
+import 'package:snaptask_app/core/config/env.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
-import 'package:snaptask_app/core/http/api_exception.dart';
+import 'package:snaptask_app/core/http/exceptions/api_exception.dart';
+import 'package:snaptask_app/core/storage/token_storage.dart';
 import 'package:snaptask_app/core/widgets/app_button.dart';
 import 'package:snaptask_app/core/widgets/app_text_field.dart';
 import 'package:snaptask_app/core/widgets/auth_header.dart';
@@ -32,7 +32,7 @@ class _LoginFormState extends State<LoginForm> {
   void initState() {
     super.initState();
 
-    final client = ApiClient(baseUrl: 'http://localhost:8080');
+    final client = ApiClient(baseUrl: Env.baseUrl);
     _authApi = AuthApi(client);
     _emailCtrl.addListener(() {
       if (_emailApiError != null) {
@@ -143,6 +143,7 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Form(
       key: _formKey,
       child: Column(
@@ -170,6 +171,7 @@ class _LoginFormState extends State<LoginForm> {
           AppTextField(
             label: 'Senha',
             icon: Icons.lock_outline,
+            onFieldSubmitted: (_) => _submit(),
             obscureText: true,
             controller: _passwordCtrl,
             validator: (value) {
@@ -204,17 +206,17 @@ class _LoginFormState extends State<LoginForm> {
 
           const SizedBox(height: 12),
 
-          const Row(
+          Row(
             children: [
-              Expanded(child: Divider()),
+              const Expanded(child: Divider()),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
                   'Esqueci minha senha',
-                  style: TextStyle(color: AppColors.muted),
+                  style: TextStyle(color: scheme.onSurface.withOpacity(0.7)),
                 ),
               ),
-              Expanded(child: Divider()),
+              const Expanded(child: Divider()),
             ],
           ),
         ],
