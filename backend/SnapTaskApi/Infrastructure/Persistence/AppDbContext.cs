@@ -1,10 +1,12 @@
 ﻿namespace SnapTaskApi.Infrastructure.Persistence;
 
-using SnapTaskApi.Domain.Entities;
+using SnapTaskApi.Domain.Entities.Cards;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using SnapTaskApi.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
+using SnapTaskApi.Domain.Entities.Columns;
+using SnapTaskApi.Domain.Entities.Boards;
 
 public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
@@ -81,6 +83,10 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
             entity.Property(x => x.Title)
                   .HasMaxLength(160)
                   .IsRequired();
+
+            entity.Property(x => x.Status)
+                   .HasConversion<string>()
+                   .IsRequired();
 
             entity.Property(x => x.Description)
                   .HasMaxLength(2000);

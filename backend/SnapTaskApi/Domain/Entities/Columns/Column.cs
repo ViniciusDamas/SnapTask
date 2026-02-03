@@ -1,6 +1,8 @@
+using SnapTaskApi.Domain.Entities.Boards;
+using SnapTaskApi.Domain.Entities.Cards;
 using System.Text.Json.Serialization;
 
-namespace SnapTaskApi.Domain.Entities;
+namespace SnapTaskApi.Domain.Entities.Columns;
 
 public class Column {
 

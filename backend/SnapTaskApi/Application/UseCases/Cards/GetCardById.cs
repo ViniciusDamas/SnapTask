@@ -1,6 +1,6 @@
 ﻿namespace SnapTaskApi.Application.UseCases.Cards;
 
-using SnapTaskApi.Domain.Entities;
+using SnapTaskApi.Domain.Entities.Cards;
 using SnapTaskApi.Application.Abstractions.Repositories;
 
 

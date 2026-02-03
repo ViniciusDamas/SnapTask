@@ -1,3 +1,7 @@
 ﻿namespace SnapTaskApi.WebApi.Contracts.Requests.Login;
 
-public record LoginRequest(string Email, string Password, bool RememberMe);
+public sealed record LoginRequest {
+    public required string Email { get; set; }
+    public required string Password { get; set; }
+    public bool RememberMe { get; set; }
+}

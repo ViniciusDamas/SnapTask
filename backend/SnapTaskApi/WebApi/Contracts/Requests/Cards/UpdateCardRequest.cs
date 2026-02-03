@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace SnapTaskApi.Api.Contracts.Requests.Cards;
 
-namespace SnapTaskApi.Api.Contracts.Requests.Cards;
-
-public sealed class UpdateCardRequest
+public sealed record UpdateCardRequest
 {
-    [Required]
-    public string Title { get; set; } = string.Empty;
+    public required string Title { get; set; }
     public string Description {get; set;} = string.Empty;
 }

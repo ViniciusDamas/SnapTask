@@ -1,7 +1,8 @@
 ﻿namespace SnapTaskApi.Application.Abstractions.Repositories;
 
 using SnapTaskApi.Application.UseCases.Columns.Results;
-using SnapTaskApi.Domain.Entities;
+using SnapTaskApi.Domain.Entities.Columns;
+
 public interface IColumnRepository
 {
     Task AddAsync(Column column);

@@ -199,6 +199,7 @@ namespace SnapTaskApi.Migrations
                     Title = table.Column<string>(type: "character varying(160)", maxLength: 160, nullable: false),
                     Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
                     Order = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
                     ColumnId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>

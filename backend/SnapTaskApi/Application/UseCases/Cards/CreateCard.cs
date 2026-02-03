@@ -3,7 +3,7 @@
 using SnapTaskApi.Api.Contracts.Requests.Cards;
 using SnapTaskApi.Application.Abstractions.Repositories;
 using SnapTaskApi.Application.UseCases.Cards.Results;
-using SnapTaskApi.Domain.Entities;
+using SnapTaskApi.Domain.Entities.Cards;
 
 public class CreateCard
 {
@@ -27,6 +27,6 @@ public class CreateCard
         await repository.AddAsync(card);
         await repository.SaveChangesAsync();
 
-        return new CardSummaryResult(card.Id, card.Title, card.Description, card.Order, card.ColumnId);
+        return new CardSummaryResult(card.Id, card.Title, card.Description, card.Order, card.ColumnId, card.Status);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SnapTaskApi.Application.UseCases.Boards;
 
-using SnapTaskApi.Domain.Entities;
+using SnapTaskApi.Domain.Entities.Boards;
 using SnapTaskApi.Application.Abstractions.Repositories;
 using SnapTaskApi.Application.UseCases.Boards.Results;
 

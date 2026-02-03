@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SnapTaskApi.Application.Abstractions.Repositories;
 using SnapTaskApi.Application.UseCases.Cards.Results;
 using SnapTaskApi.Application.UseCases.Columns.Results;
-using SnapTaskApi.Domain.Entities;
+using SnapTaskApi.Domain.Entities.Columns;
 using SnapTaskApi.Infrastructure.Persistence;
 
 public class ColumnRepository : IColumnRepository
@@ -43,7 +43,9 @@ public class ColumnRepository : IColumnRepository
                         x.Title,
                         x.Description,
                         x.Order,
-                        x.ColumnId)
+                        x.ColumnId,
+                        x.Status
+                        )
             ).ToList()))
             .FirstOrDefaultAsync();
     }
