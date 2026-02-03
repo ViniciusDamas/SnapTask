@@ -1,4 +1,4 @@
-using System.Text;
+Ôªøusing System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
@@ -25,21 +25,21 @@ builder.Services.AddSwaggerGen();
 // ---------------------------
 builder.Services.AddProblemDetails(options =>
 {
-    // Adiciona traceId em todas as respostas de erro (˙til p/ correlacionar logs)
+    // Adiciona traceId em todas as respostas de erro (√∫til p/ correlacionar logs)
     options.CustomizeProblemDetails = ctx =>
     {
         ctx.ProblemDetails.Extensions["traceId"] = ctx.HttpContext.TraceIdentifier;
     };
 });
 
-// Padroniza 400 de validaÁ„o (ModelState) como ValidationProblemDetails
+// Padroniza 400 de valida√ß√£o (ModelState) como ValidationProblemDetails
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = context =>
     {
         var problem = new ValidationProblemDetails(context.ModelState)
         {
-            Title = "Erro de validaÁ„o",
+            Title = "Erro de valida√ß√£o",
             Status = StatusCodes.Status400BadRequest,
             Type = "https://httpstatuses.com/400",
             Instance = context.HttpContext.Request.Path
@@ -68,6 +68,18 @@ builder.Services
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+// ---------------------------
+// Test Config Defaults
+// ---------------------------
+if (builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
+    {
+        ["Jwt:Key"] = "TEST_JWT_KEY_12345678901234567890",
+        ["Jwt:Issuer"] = "SnapTask.Test",
+        ["Jwt:Audience"] = "SnapTask.Test"
+    });
+}
 // ---------------------------
 // JWT Auth
 // ---------------------------
@@ -99,14 +111,14 @@ builder.Services
         {
             OnChallenge = async context =>
             {
-                // Impede a resposta padr„o do framework
+                // Impede a resposta padr√£o do framework
                 context.HandleResponse();
 
                 var problem = new ProblemDetails
                 {
-                    Title = "N„o autenticado",
+                    Title = "N√£o autenticado",
                     Status = StatusCodes.Status401Unauthorized,
-                    Detail = "Token ausente, inv·lido ou expirado.",
+                    Detail = "Token ausente, inv√°lido ou expirado.",
                     Type = "https://httpstatuses.com/401",
                     Instance = context.Request.Path
                 };
@@ -123,7 +135,7 @@ builder.Services
                 {
                     Title = "Acesso negado",
                     Status = StatusCodes.Status403Forbidden,
-                    Detail = "VocÍ n„o tem permiss„o para acessar este recurso.",
+                    Detail = "Voc√™ n√£o tem permiss√£o para acessar este recurso.",
                     Type = "https://httpstatuses.com/403",
                     Instance = context.Request.Path
                 };
@@ -150,10 +162,16 @@ builder.Services.AddControllers();
 // ---------------------------
 // DbContext
 // ---------------------------
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
-
+if (builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseInMemoryDatabase("SnapTask_TestDb"));
+}
+else
+{
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
 // ---------------------------
 // Repositories
 // ---------------------------
@@ -235,3 +253,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.Run();
+
+
