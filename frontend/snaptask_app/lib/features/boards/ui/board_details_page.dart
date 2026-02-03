@@ -442,7 +442,7 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final muted = scheme.onSurface.withOpacity(0.6);
+    final muted = scheme.onSurface.withValues(alpha: 0.6);
 
     final screenSize = MediaQuery.sizeOf(context);
     final isWide = screenSize.width >= 900;
@@ -618,11 +618,6 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
                         ),
                       ],
                     ),
-                  ),
-                  FilledButton.icon(
-                    onPressed: _openCreateColumnDialog,
-                    icon: const Icon(Icons.add),
-                    label: const Text('Nova coluna'),
                   ),
                 ],
               ),

@@ -77,11 +77,22 @@ class _ColumnWidgetState extends State<ColumnWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final listMaxHeight = math.max(140.0, widget.maxHeight - 140.0);
+    const double headerHeight = 64;
+    const double footerHeight = 56;
+    const double estimatedCardHeight = 72;
+    const double maxAllowedHeight = 520;
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: widget.maxHeight),
+    final cardCount = widget.column.cards.length;
+
+    final estimatedHeight =
+        headerHeight + footerHeight + (cardCount * estimatedCardHeight);
+
+    final columnHeight = math.min(estimatedHeight, maxAllowedHeight);
+
+    final scheme = Theme.of(context).colorScheme;
+
+    return SizedBox(
+      height: columnHeight,
       child: Container(
         width: widget.width,
         margin: const EdgeInsets.only(right: 16),
@@ -144,22 +155,19 @@ class _ColumnWidgetState extends State<ColumnWidget> {
               ),
             ),
             Divider(height: 1, color: scheme.outlineVariant),
-            Flexible(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: listMaxHeight),
-                child: ListView.separated(
-                  padding: const EdgeInsets.all(12),
-                  itemCount: widget.column.cards.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (_, index) {
-                    final card = widget.column.cards[index];
-                    return CardWidget(
-                      card: card,
-                      status: widget.statusForCard(card),
-                      onTap: () => widget.onCardTap(card),
-                    );
-                  },
-                ),
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.all(12),
+                itemCount: widget.column.cards.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                itemBuilder: (_, index) {
+                  final card = widget.column.cards[index];
+                  return CardWidget(
+                    card: card,
+                    status: widget.statusForCard(card),
+                    onTap: () => widget.onCardTap(card),
+                  );
+                },
               ),
             ),
             Padding(
