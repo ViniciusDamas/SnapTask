@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace SnapTaskApi.IntegrationTests.Infrastructure;
 
-internal static class TestAuth
+internal static class TokenFactory
 {
     private const string Key = "TEST_JWT_KEY_12345678901234567890";
     private const string Issuer = "SnapTask.Test";

@@ -20,7 +20,7 @@ public class CreateBoardTests : IClassFixture<ApiFactory>
     {
         const string CreateUrl = "/api/boards";
 
-        TestAuth.SetBearerToken(_client);
+        TokenFactory.SetBearerToken(_client);
 
         var payload = new
         {
