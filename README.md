@@ -77,6 +77,11 @@ Cards
 - `PUT /api/cards/{id}`
 - `DELETE /api/cards/{id}`
 
+## Documentation
+
+See docs/README.md for architecture, flows, and use cases.
+
+
 ## Running the Backend (Development)
 
 Prerequisites
@@ -180,3 +185,4 @@ lib/
 ## License
 
 This project is intended for educational and portfolio purposes.
+
