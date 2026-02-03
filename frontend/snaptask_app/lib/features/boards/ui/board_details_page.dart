@@ -73,6 +73,20 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
     } catch (_) {}
   }
 
+  Future<void> _toggleCardStatus(CardSummary card, CardStatus next) async {
+    try {
+      await _cardsApi.updateStatus(card.id, next);
+      final optimistic = card.copyWith(status: next);
+      _updateBoardAfterCardUpdated(optimistic);
+    } catch (e) {
+      _updateBoardAfterCardUpdated(card); // rollback
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erro ao atualizar status: $e')));
+    }
+  }
+
   void _setBoard(BoardDetails board) {
     if (!mounted) return;
     setState(() => _board = board);
@@ -636,13 +650,13 @@ class _BoardDetailsPageState extends State<BoardDetailsPage> {
                             column: column,
                             width: columnWidth,
                             maxHeight: maxColumnHeight,
-                            statusForCard: _statusFor,
                             onCardTap: openDetails,
                             onAddCard: () => _openCreateCardDialog(column),
-                            onColumnDeleted: () {
-                              _updateBoardsAfterColumnDeleted(column.id);
-                            },
+                            onToggleCardStatus: _toggleCardStatus,
+                            onColumnDeleted: () =>
+                                _updateBoardsAfterColumnDeleted(column.id),
                           ),
+
                         SizedBox(
                           width: columnWidth,
                           child: OutlinedButton.icon(

@@ -17,19 +17,21 @@ class ColumnWidget extends StatefulWidget {
   final ColumnDetails column;
   final double width;
   final double maxHeight;
-  final CardStatus Function(CardSummary card) statusForCard;
+
   final ValueChanged<CardSummary> onCardTap;
   final VoidCallback onAddCard;
   final VoidCallback? onColumnDeleted;
+  final Future<void> Function(CardSummary card, CardStatus nextStatus)
+  onToggleCardStatus;
 
   const ColumnWidget({
     super.key,
     required this.column,
     required this.width,
     required this.maxHeight,
-    required this.statusForCard,
     required this.onCardTap,
     required this.onAddCard,
+    required this.onToggleCardStatus,
     this.onColumnDeleted,
   });
 
@@ -164,8 +166,9 @@ class _ColumnWidgetState extends State<ColumnWidget> {
                   final card = widget.column.cards[index];
                   return CardWidget(
                     card: card,
-                    status: widget.statusForCard(card),
                     onTap: () => widget.onCardTap(card),
+                    onToggleStatus: (next) =>
+                        widget.onToggleCardStatus(card, next),
                   );
                 },
               ),
