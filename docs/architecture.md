@@ -9,10 +9,10 @@ SnapTask is a full‑stack task board application with a REST API, JWT authentic
 ```mermaid
 flowchart LR
   user((User))
-  flutter[Flutter App\n(Mobile/Web)]
-  api[SnapTask API\nASP.NET Core]
+  flutter["Flutter App<br/>(Mobile/Web)"]
+  api["SnapTask API<br/>ASP.NET Core"]
   db[(PostgreSQL)]
-  tests[Integration Tests\nWebApplicationFactory]
+  tests["Integration Tests<br/>WebApplicationFactory"]
   memdb[(InMemory EF Core)]
 
   user --> flutter
@@ -31,3 +31,4 @@ flowchart LR
 - **JWT + ASP.NET Identity** for authentication.
 - **ProblemDetails** for consistent API error responses.
 - **Integration tests** running with in‑memory EF Core and a testing environment.
+
