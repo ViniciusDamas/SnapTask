@@ -1,100 +1,158 @@
 ﻿# SnapTask
 
-SnapTask is a **full‑stack task board application** inspired by tools like **Trello** and **Miro**. The project focuses on building a clean, extensible, and production‑oriented task management system with ordered boards, columns, and cards, designed to support drag‑and‑drop workflows.
+SnapTask is a full‑stack task board application inspired by tools like Trello. It focuses on a clean, extensible backend and a Flutter client, with a use‑case driven architecture, JWT auth, and a testable API surface for boards, columns, and cards.
 
-This repository is developed **incrementally**, following a **milestone‑based approach** that mirrors real‑world software development.
+## Highlights
 
----
+- Clean Architecture with clear separation of domain, use cases, and infrastructure
+- REST API for boards, columns, and cards
+- JWT authentication with ASP.NET Identity
+- ProblemDetails for standardized API errors
+- Integration tests using `WebApplicationFactory`
+- Dockerized PostgreSQL for local development
+- Flutter client with theming, routing, and auth flow (in progress)
 
-## 🎯 Project Goals
+## Tech Stack
 
-* Provide a backend API to manage **Boards**, **Columns**, and **Cards**
-* Support **ordered and movable tasks** (drag‑and‑drop friendly)
-* Apply **Clean Architecture** and **use‑case driven design**
-* Serve as a **learning and portfolio project** with production‑oriented practices
+Backend
+- ASP.NET Core (.NET 10)
+- Entity Framework Core
+- PostgreSQL
+- ASP.NET Identity + JWT
 
----
+Frontend
+- Flutter web
 
-## 🧱 Tech Stack
+Tooling
+- Docker and Docker Compose
+- xUnit + FluentAssertions
 
-### Backend
-
-* **ASP.NET Core (.NET 10)**
-* **Entity Framework Core**
-* **PostgreSQL**
-* **ASP.NET Identity** (authentication)
-* **Docker & Docker Compose**
-
-### Frontend (in progress)
-
-* **Flutter** (Mobile + Web)
-* Modular, feature‑based architecture
-* REST API consumption
-* Authentication flow (login/logout)
-
----
-
-## 📦 Project Structure (Monorepo)
+## Repository Structure
 
 ```text
-snaptask/
+SnapTask/
 ├── backend/
 │   └── SnapTaskApi/
 ├── frontend/
 │   └── snaptask_app/
-├── docs/
+├── tests/
+│   └── SnapTaskApi.IntegrationTests/
 └── README.md
 ```
 
----
-
-## 🧠 Backend Architecture (Clean Architecture – simplified)
+## Backend Architecture
 
 ```text
 SnapTaskApi/
-├── Domain/            # Entities and core domain rules
-├── Application/       # Use cases (Commands / Queries)
-├── Infrastructure/    # EF Core, repositories, migrations
-├── Api/               # Controllers and HTTP contracts
+├── Domain/            # Entities and domain rules
+├── Application/       # Use cases
+├── Infrastructure/    # EF Core, repositories
+├── WebApi/            # Controllers + contracts
 └── Program.cs
 ```
 
-### Implemented Domain Entities
+## API Overview
 
-* **Board**
-* **Column**
-* **Card**
+Auth
+- `POST /auth/register`
+- `POST /auth/login`
+- `GET /auth/me`
 
-Each entity supports ordering to enable future drag‑and‑drop operations.
+Boards
+- `POST /api/boards`
+- `GET /api/boards`
+- `GET /api/boards/{id}`
+- `PUT /api/boards/{id}`
+- `DELETE /api/boards/{id}`
 
-### Implemented Use Cases
+Columns
+- `POST /api/columns`
+- `GET /api/columns/{id}`
+- `PUT /api/columns/{id}`
+- `DELETE /api/columns/{id}`
 
-* Boards: Create, Get All, Get By Id (with details), Update, Delete
-* Columns: Create, Get By Id (with cards), Update, Delete
-* Cards: Create, Order handling, Delete
+Cards
+- `POST /api/cards`
+- `GET /api/cards/{id}`
+- `PUT /api/cards/{id}`
+- `DELETE /api/cards/{id}`
 
-### API Controllers
+## Running the Backend (Development)
 
-* `BoardsController`
-* `ColumnsController`
-* `AuthController`
+Prerequisites
+- .NET SDK 10
+- Docker and Docker Compose
 
----
+1. Start PostgreSQL
 
-## 📱 Frontend (Flutter)
+```bash
+docker compose up -d db
+```
 
-The frontend is under active development and already includes:
+2. Configure connection string
 
-### Implemented
+Create `backend/SnapTaskApi/appsettings.Development.json`:
 
-* Global app theming (Light / Dark)
-* Centralized routing
-* HTTP client with interceptors
-* Authentication API integration
-* Login screen (functional)
-* Boards listing screen (API‑driven)
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Port=5432;Database=snaptask;Username=postgres;Password=postgres"
+  }
+}
+```
 
-### Frontend Architecture
+3. Apply migrations
+
+```bash
+cd backend/SnapTaskApi
+dotnet ef database update
+```
+
+4. Run the API
+
+```bash
+dotnet run
+```
+
+Default URLs (from `backend/SnapTaskApi/Properties/launchSettings.json`)
+- `http://localhost:5187`
+- `https://localhost:7140`
+
+## Running with Docker
+
+```bash
+docker compose up -d --build
+```
+
+When running inside Docker, the API uses ports `8080` (HTTP) and `8081` (HTTPS), and the database host is `db`.
+
+## Tests
+
+Integration tests live in `tests/SnapTaskApi.IntegrationTests` and run against an in‑memory EF Core database under the `Testing` environment. Test JWT defaults are injected automatically for test runs.
+
+Run all tests:
+
+```bash
+dotnet test
+```
+
+Debug a single test (waits for debugger attach):
+
+```powershell
+$env:VSTEST_HOST_DEBUG=1
+dotnet test --filter "FullyQualifiedName=SnapTaskApi.IntegrationTests.Boards.CreateBoardTests.POST_create_board_returns_201_and_board_payload" --framework net10.0 --no-build
+```
+
+## Frontend (Flutter)
+
+Current status
+- Global theming
+- Routing and navigation shell
+- HTTP client with interceptors
+- Authentication flow
+- Boards listing screen
+
+Architecture (feature‑first)
 
 ```text
 lib/
@@ -108,125 +166,17 @@ lib/
 │   └── storage/
 └── features/
     ├── auth/
-    │   ├── data/
-    │   └── ui/
     └── boards/
-        ├── data/
-        └── ui/
 ```
 
-The structure follows a **feature‑first approach**, keeping UI, data access, and models grouped by feature.
+## Roadmap
 
----
+- Column move endpoint
+- Drag‑and‑drop ordering for columns and cards
+- Card details screen in Flutter
+- Board details screen in Flutter
+- State management expansion (Riverpod or BLoC)
 
-## ▶️ Running the Backend API (Development)
-
-### Prerequisites
-
-* .NET SDK 10
-* Docker & Docker Compose
-
-### 1. Start PostgreSQL (Docker)
-
-From the repository root:
-
-```bash
-docker compose up -d db
-```
-
-PostgreSQL will be exposed on `localhost:5432`.
-
----
-
-### 2. Configure database connection
-
-Create the file (not committed to git):
-
-```text
-backend/SnapTaskApi/appsettings.Development.json
-```
-
-With the following content:
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Port=5432;Database=snaptask;Username=postgres;Password=postgres"
-  }
-}
-```
-
----
-
-### 3. Apply database migrations
-
-```bash
-cd backend/SnapTaskApi
-dotnet ef database update
-```
-
----
-
-### 4. Run the API
-
-```bash
-dotnet run
-```
-
-API will be available at:
-
-```
-http://localhost:8080
-```
-
----
-
-## 🐳 Optional: Run API + Database with Docker
-
-```bash
-docker compose up -d --build
-```
-
-> When running inside Docker, the PostgreSQL host is `db`, not `localhost`.
-
----
-
-## 🖼️ Screenshots & Demo
-
-> *(Placeholders – to be updated)*
-
-```text
-[ GIF / Screenshot – Login Screen ]
-
-[ GIF / Screenshot – Boards List ]
-
-[ GIF / Screenshot – Board with Columns & Cards ]
-```
-
----
-
-## 🗺️ Roadmap
-
-* ✅ Core domain entities (Board, Column, Card)
-* ✅ Persistence with EF Core + PostgreSQL
-* ✅ REST API (Boards & Columns)
-* ✅ Authentication (ASP.NET Identity)
-* 🚧 Drag‑and‑drop ordering (Columns & Cards)
-* 🚧 Card CRUD endpoints
-* 🚧 Flutter board details screen
-* 🚧 Drag‑and‑drop UI (Flutter)
-* 🚧 State management (Riverpod / BLoC)
-
----
-
-## 📌 Notes
-
-* Database schema is managed via **EF Core migrations**
-* Migrations must be applied before first API run
-* This project is intentionally evolving step‑by‑step to reflect real‑world development
-
----
-
-## 📄 License
+## License
 
 This project is intended for educational and portfolio purposes.
