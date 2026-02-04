@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snaptask_app/app/router/app_routes.dart';
 import 'package:snaptask_app/core/config/env.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
 import 'package:snaptask_app/core/widgets/app_button.dart';
@@ -63,6 +64,7 @@ class _RegisterFormState extends State<RegisterForm> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Login realizado com sucesso')),
       );
+      Navigator.of(context).pushReplacementNamed(AppRoutes.home);
     } finally {
       if (mounted) setState(() => _loading = false);
     }

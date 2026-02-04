@@ -4,7 +4,7 @@ import 'package:snaptask_app/core/http/api_client.dart';
 import 'package:snaptask_app/core/widgets/confirmation_dialog.dart';
 import 'package:snaptask_app/features/cards/data/cards_api.dart';
 import 'package:snaptask_app/features/cards/data/cards_models.dart';
-import 'package:snaptask_app/features/cards/ui/card_status.dart';
+import 'package:snaptask_app/features/cards/presentation/widgets/card_status.dart';
 
 enum CardMenuAction { delete }
 
@@ -84,13 +84,6 @@ class _CardDetailsSidePanelState extends State<CardDetailsSidePanel> {
 
   bool get _canEdit => _status == CardStatus.open;
 
-  void _handleStatusChanged(CardStatus status) {
-    setState(() {
-      _status = status;
-      widget.onStatusChanged(status);
-    });
-  }
-
   @override
   void dispose() {
     _controller.dispose();
@@ -141,6 +134,7 @@ class _CardDetailsSidePanelState extends State<CardDetailsSidePanel> {
         description: _editedDescription.isEmpty ? null : _editedDescription,
         order: widget.card.order,
         columnId: widget.card.columnId,
+        status: widget.card.status,
       );
 
       widget.onCardUpdated?.call(updated);
@@ -290,74 +284,10 @@ class _CardDetailsSidePanelState extends State<CardDetailsSidePanel> {
                       ],
                     )
                   : const SizedBox.shrink(),
-
-              const SizedBox(height: 20),
-
-              const Text(
-                'Status',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 8),
-
-              Wrap(
-                spacing: 8,
-                children: [
-                  _StatusButton(
-                    label: CardStatus.open.label,
-                    selected: _status == CardStatus.open,
-                    onPressed: () => _handleStatusChanged(CardStatus.open),
-                  ),
-                  _StatusButton(
-                    label: CardStatus.done.label,
-                    selected: _status == CardStatus.done,
-                    onPressed: () => _handleStatusChanged(CardStatus.done),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 12),
-
-              Text(
-                'TODO: Persistir status via API quando disponivel.',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: scheme.onSurface.withOpacity(0.5),
-                ),
-              ),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class _StatusButton extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final VoidCallback onPressed;
-
-  const _StatusButton({
-    required this.label,
-    required this.selected,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final bg = selected ? scheme.primary.withOpacity(0.12) : Colors.transparent;
-    final border = selected ? scheme.primary : scheme.outline;
-    final fg = selected ? scheme.primary : scheme.onSurface;
-
-    return OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        backgroundColor: bg,
-        side: BorderSide(color: border),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
-      ),
-      onPressed: onPressed,
-      child: Text(label, style: TextStyle(color: fg)),
     );
   }
 }

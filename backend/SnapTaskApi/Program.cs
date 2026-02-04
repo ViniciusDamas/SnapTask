@@ -157,7 +157,11 @@ builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 // ---------------------------
 // Controllers
 // ---------------------------
-builder.Services.AddControllers();
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(o =>
+        o.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()));
+
 
 // ---------------------------
 // DbContext
@@ -201,6 +205,7 @@ builder.Services.AddScoped<GetColumnById>();
 builder.Services.AddScoped<CreateCard>();
 builder.Services.AddScoped<GetCardById>();
 builder.Services.AddScoped<UpdateCard>();
+builder.Services.AddScoped<UpdateCardStatus>();
 builder.Services.AddScoped<DeleteCard>();
 
 var app = builder.Build();

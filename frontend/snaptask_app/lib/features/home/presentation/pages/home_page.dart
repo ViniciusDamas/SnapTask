@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:snaptask_app/app/router/app_routes.dart';
-import 'package:snaptask_app/app/shell/app_shell.dart';
+import 'package:snaptask_app/app/layout/app_shell.dart';
 import 'package:snaptask_app/core/config/env.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
-import 'package:snaptask_app/core/widgets/app_search.dart';
+import 'package:snaptask_app/core/ui/widgets/app_search.dart';
 import 'package:snaptask_app/core/widgets/confirmation_dialog.dart';
 import 'package:snaptask_app/features/boards/data/boards_api.dart';
 import 'package:snaptask_app/features/boards/data/boards_models.dart';

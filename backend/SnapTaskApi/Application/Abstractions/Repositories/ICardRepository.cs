@@ -1,6 +1,6 @@
 ﻿namespace SnapTaskApi.Application.Abstractions.Repositories;
 
-using SnapTaskApi.Domain.Entities;
+using SnapTaskApi.Domain.Entities.Cards;
 public interface ICardRepository
 {
     Task AddAsync(Card card);

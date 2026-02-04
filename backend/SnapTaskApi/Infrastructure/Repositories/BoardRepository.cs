@@ -5,7 +5,7 @@ using SnapTaskApi.Application.Abstractions.Repositories;
 using SnapTaskApi.Application.UseCases.Boards.Results;
 using SnapTaskApi.Application.UseCases.Cards.Results;
 using SnapTaskApi.Application.UseCases.Columns.Results;
-using SnapTaskApi.Domain.Entities;
+using SnapTaskApi.Domain.Entities.Boards;
 using SnapTaskApi.Infrastructure.Persistence;
 
 public sealed class BoardRepository : IBoardRepository
@@ -38,7 +38,8 @@ public sealed class BoardRepository : IBoardRepository
                                 x.Title,
                                 x.Description,
                                 x.Order,
-                                x.ColumnId
+                                x.ColumnId,
+                                x.Status
                             ))
                             .ToList()
                     ))

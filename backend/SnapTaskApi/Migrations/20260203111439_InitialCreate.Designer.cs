@@ -12,7 +12,7 @@ using SnapTaskApi.Infrastructure.Persistence;
 namespace SnapTaskApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260127075636_InitialCreate")]
+    [Migration("20260203111439_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -155,7 +155,7 @@ namespace SnapTaskApi.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("SnapTaskApi.Domain.Entities.Board", b =>
+            modelBuilder.Entity("SnapTaskApi.Domain.Entities.Boards.Board", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -183,7 +183,7 @@ namespace SnapTaskApi.Migrations
                     b.ToTable("boards", (string)null);
                 });
 
-            modelBuilder.Entity("SnapTaskApi.Domain.Entities.Card", b =>
+            modelBuilder.Entity("SnapTaskApi.Domain.Entities.Cards.Card", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -199,6 +199,10 @@ namespace SnapTaskApi.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(160)
@@ -212,7 +216,7 @@ namespace SnapTaskApi.Migrations
                     b.ToTable("cards", (string)null);
                 });
 
-            modelBuilder.Entity("SnapTaskApi.Domain.Entities.Column", b =>
+            modelBuilder.Entity("SnapTaskApi.Domain.Entities.Columns.Column", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -353,9 +357,9 @@ namespace SnapTaskApi.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SnapTaskApi.Domain.Entities.Card", b =>
+            modelBuilder.Entity("SnapTaskApi.Domain.Entities.Cards.Card", b =>
                 {
-                    b.HasOne("SnapTaskApi.Domain.Entities.Column", "Column")
+                    b.HasOne("SnapTaskApi.Domain.Entities.Columns.Column", "Column")
                         .WithMany("Cards")
                         .HasForeignKey("ColumnId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -364,9 +368,9 @@ namespace SnapTaskApi.Migrations
                     b.Navigation("Column");
                 });
 
-            modelBuilder.Entity("SnapTaskApi.Domain.Entities.Column", b =>
+            modelBuilder.Entity("SnapTaskApi.Domain.Entities.Columns.Column", b =>
                 {
-                    b.HasOne("SnapTaskApi.Domain.Entities.Board", "Board")
+                    b.HasOne("SnapTaskApi.Domain.Entities.Boards.Board", "Board")
                         .WithMany("Columns")
                         .HasForeignKey("BoardId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -375,12 +379,12 @@ namespace SnapTaskApi.Migrations
                     b.Navigation("Board");
                 });
 
-            modelBuilder.Entity("SnapTaskApi.Domain.Entities.Board", b =>
+            modelBuilder.Entity("SnapTaskApi.Domain.Entities.Boards.Board", b =>
                 {
                     b.Navigation("Columns");
                 });
 
-            modelBuilder.Entity("SnapTaskApi.Domain.Entities.Column", b =>
+            modelBuilder.Entity("SnapTaskApi.Domain.Entities.Columns.Column", b =>
                 {
                     b.Navigation("Cards");
                 });

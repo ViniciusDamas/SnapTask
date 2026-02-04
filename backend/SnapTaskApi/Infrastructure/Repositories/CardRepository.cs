@@ -1,6 +1,6 @@
 ﻿namespace SnapTaskApi.Infrastructure.Repositories;
 
-using SnapTaskApi.Domain.Entities;
+using SnapTaskApi.Domain.Entities.Cards;
 using Microsoft.EntityFrameworkCore;
 using SnapTaskApi.Infrastructure.Persistence;
 using SnapTaskApi.Application.Abstractions.Repositories;

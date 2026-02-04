@@ -1,4 +1,6 @@
-namespace SnapTaskApi.Domain.Entities;
+using SnapTaskApi.Domain.Entities.Columns;
+
+namespace SnapTaskApi.Domain.Entities.Boards;
 
 public class Board
 {

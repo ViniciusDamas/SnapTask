@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:snaptask_app/core/config/env.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
 import 'package:snaptask_app/core/widgets/confirmation_dialog.dart';
-import 'package:snaptask_app/features/cards/ui/card_status.dart';
+import 'package:snaptask_app/features/cards/presentation/widgets/card_status.dart';
 import 'package:snaptask_app/features/cards/data/cards_models.dart';
-import 'package:snaptask_app/features/cards/ui/card_widget.dart';
+import 'package:snaptask_app/features/cards/presentation/widgets/card_widget.dart';
 import 'package:snaptask_app/features/columns/data/columns_api.dart';
 import 'package:snaptask_app/features/columns/data/columns_models.dart';
-import 'package:snaptask_app/features/columns/ui/inline_column_title.dart';
+import 'package:snaptask_app/features/columns/presentation/widgets/inline_column_title.dart';
 
 enum ColumnMenuAction { delete }
 
@@ -17,19 +17,21 @@ class ColumnWidget extends StatefulWidget {
   final ColumnDetails column;
   final double width;
   final double maxHeight;
-  final CardStatus Function(CardSummary card) statusForCard;
+
   final ValueChanged<CardSummary> onCardTap;
   final VoidCallback onAddCard;
   final VoidCallback? onColumnDeleted;
+  final Future<void> Function(CardSummary card, CardStatus nextStatus)
+  onToggleCardStatus;
 
   const ColumnWidget({
     super.key,
     required this.column,
     required this.width,
     required this.maxHeight,
-    required this.statusForCard,
     required this.onCardTap,
     required this.onAddCard,
+    required this.onToggleCardStatus,
     this.onColumnDeleted,
   });
 
@@ -164,8 +166,9 @@ class _ColumnWidgetState extends State<ColumnWidget> {
                   final card = widget.column.cards[index];
                   return CardWidget(
                     card: card,
-                    status: widget.statusForCard(card),
                     onTap: () => widget.onCardTap(card),
+                    onToggleStatus: (next) =>
+                        widget.onToggleCardStatus(card, next),
                   );
                 },
               ),

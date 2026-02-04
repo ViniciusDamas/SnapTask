@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
 import 'package:snaptask_app/features/cards/data/cards_models.dart';
+import 'package:snaptask_app/features/cards/presentation/widgets/card_status.dart';
 
 class CardsApi {
   final Dio _dio;
@@ -13,7 +14,11 @@ class CardsApi {
   }
 
   Future<void> update(String cardId, UpdateCardRequest req) async {
-    await _dio.put('/api/cards/$cardId', data: req.toJson());
+    await _dio.patch('/api/cards/$cardId', data: req.toJson());
+  }
+
+  Future<void> updateStatus(String cardId, CardStatus status) async {
+    await _dio.patch('/api/cards/$cardId/status', data: {'status': status.name});
   }
 
   Future<void> delete(String cardId) async {
