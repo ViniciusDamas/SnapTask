@@ -2,20 +2,20 @@ import 'dart:math' as math;
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:snaptask_app/app/shell/app_shell.dart';
+import 'package:snaptask_app/app/layout/app_shell.dart';
 import 'package:snaptask_app/core/config/env.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
 import 'package:snaptask_app/core/http/exceptions/api_exception.dart';
-import 'package:snaptask_app/core/widgets/app_search.dart';
+import 'package:snaptask_app/core/ui/widgets/app_search.dart';
 import 'package:snaptask_app/features/boards/data/boards_api.dart';
 import 'package:snaptask_app/features/boards/data/boards_models.dart';
 import 'package:snaptask_app/features/cards/data/cards_api.dart';
 import 'package:snaptask_app/features/cards/data/cards_models.dart';
-import 'package:snaptask_app/features/cards/ui/card_details_side_panel.dart';
-import 'package:snaptask_app/features/cards/ui/card_status.dart';
+import 'package:snaptask_app/features/cards/presentation/widgets/card_details_side_panel.dart';
+import 'package:snaptask_app/features/cards/presentation/widgets/card_status.dart';
 import 'package:snaptask_app/features/columns/data/columns_api.dart';
 import 'package:snaptask_app/features/columns/data/columns_models.dart';
-import 'package:snaptask_app/features/columns/ui/column_widget.dart';
+import 'package:snaptask_app/features/columns/presentation/widgets/column_widget.dart';
 
 class BoardDetailsPage extends StatefulWidget {
   final String boardId;

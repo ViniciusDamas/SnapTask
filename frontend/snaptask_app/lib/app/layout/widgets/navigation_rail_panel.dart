@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:snaptask_app/app/shell/models/navigation_destination_data.dart';
-import 'package:snaptask_app/app/shell/widgets/side_rail_item.dart';
+import 'package:snaptask_app/app/layout/models/navigation_destination_data.dart';
+import 'package:snaptask_app/app/layout/widgets/side_rail_item.dart';
 
 class NavigationRailPanel extends StatefulWidget {
   final List<NavigationDestinationData> destinations;

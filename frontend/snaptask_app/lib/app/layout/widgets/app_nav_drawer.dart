@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:snaptask_app/app/shell/models/navigation_destination_data.dart';
+import 'package:snaptask_app/app/layout/models/navigation_destination_data.dart';
 
 class AppNavDrawer extends StatelessWidget {
   final String title;

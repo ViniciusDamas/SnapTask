@@ -4,7 +4,7 @@ import 'package:snaptask_app/core/http/api_client.dart';
 import 'package:snaptask_app/core/widgets/confirmation_dialog.dart';
 import 'package:snaptask_app/features/cards/data/cards_api.dart';
 import 'package:snaptask_app/features/cards/data/cards_models.dart';
-import 'package:snaptask_app/features/cards/ui/card_status.dart';
+import 'package:snaptask_app/features/cards/presentation/widgets/card_status.dart';
 
 enum CardMenuAction { delete }
 

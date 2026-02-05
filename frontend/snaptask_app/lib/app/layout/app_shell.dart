@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:snaptask_app/app/router/app_routes.dart';
-import 'package:snaptask_app/app/shell/models/navigation_destination_data.dart';
-import 'package:snaptask_app/app/shell/widgets/app_nav_drawer.dart';
-import 'package:snaptask_app/app/shell/widgets/app_shell_scaffold.dart';
-import 'package:snaptask_app/app/shell/widgets/app_top_bar.dart';
-import 'package:snaptask_app/app/shell/widgets/navigation_rail_panel.dart';
+import 'package:snaptask_app/app/layout/models/navigation_destination_data.dart';
+import 'package:snaptask_app/app/layout/widgets/app_nav_drawer.dart';
+import 'package:snaptask_app/app/layout/widgets/app_shell_scaffold.dart';
+import 'package:snaptask_app/app/layout/widgets/app_top_bar.dart';
+import 'package:snaptask_app/app/layout/widgets/navigation_rail_panel.dart';
 import 'package:snaptask_app/core/storage/token_storage.dart';
-import 'package:snaptask_app/core/widgets/app_search.dart';
+import 'package:snaptask_app/core/ui/widgets/app_search.dart';
 
 class AppShell extends StatefulWidget {
   final Widget body;

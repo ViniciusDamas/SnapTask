@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
 import 'package:snaptask_app/features/cards/data/cards_models.dart';
-import 'package:snaptask_app/features/cards/ui/card_status.dart';
+import 'package:snaptask_app/features/cards/presentation/widgets/card_status.dart';
 
 class CardsApi {
   final Dio _dio;

@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:snaptask_app/core/config/env.dart';
 import 'package:snaptask_app/core/http/api_client.dart';
 import 'package:snaptask_app/core/widgets/confirmation_dialog.dart';
-import 'package:snaptask_app/features/cards/ui/card_status.dart';
+import 'package:snaptask_app/features/cards/presentation/widgets/card_status.dart';
 import 'package:snaptask_app/features/cards/data/cards_models.dart';
-import 'package:snaptask_app/features/cards/ui/card_widget.dart';
+import 'package:snaptask_app/features/cards/presentation/widgets/card_widget.dart';
 import 'package:snaptask_app/features/columns/data/columns_api.dart';
 import 'package:snaptask_app/features/columns/data/columns_models.dart';
-import 'package:snaptask_app/features/columns/ui/inline_column_title.dart';
+import 'package:snaptask_app/features/columns/presentation/widgets/inline_column_title.dart';
 
 enum ColumnMenuAction { delete }
 
